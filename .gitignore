@@ -1,0 +1,12 @@
+
+# Created by https://www.gitignore.io/api/ansible
+
+### Ansible ###
+*.retry
+
+# End of https://www.gitignore.io/api/ansible
+
+# Downloaded roles & collections. My own roles are versioned in roles/ and collections/
+ansible/ansible_roles/
+ansible/ansible_collections/
+
