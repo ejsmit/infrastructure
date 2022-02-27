@@ -1,16 +1,36 @@
-# My Ansible setup
+# My Infrastructure Project
 
 ## Requirements
 
 - python
-- ssh-copy-id
-- ~/.private/vault_password.txt,  dir 700, files 600, even better if encrypted
-directory using encfs, gocryptfs, cryfs, etc.
+- `~/.private` encrypted vault mounted for various passwords and keys
+- ansible
+- terraform
+
+## setup
+
 - `ansible-galaxy install -r requirements.yml` (not implemented at time of writing this)
   - `ansible-galaxy role install -r requirements.yml`
   - `ansible-galaxy collection install -r requirements.yml`
 - `apache2-utils` contains `htpasswd` which can come in useful (e.g *htpasswd -nb
   username password*)
+
+# Terraform
+
+Uses Oracle Object storage for state.  Free account gets 10GB for free. 
+
+Either `cd terraform/cloud` and run terraform command manually, or use the 
+makefile in the root of the project.
+
+* `make tfinit`
+* `make tfplan`
+* `make tfapply`
+
+Terraform will only create instances, and configure dns. Any further software
+configuration need to be done separately using Ansible (see below).
+
+On Linode it will also manage the Linode firewall and assign new instances to 
+this firewall.  SSH port number are changed to something more obscure.
 
 
 ## bootstrap
