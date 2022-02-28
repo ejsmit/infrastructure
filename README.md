@@ -32,6 +32,14 @@ configuration need to be done separately using Ansible (see below).
 On Linode it will also manage the Linode firewall and assign new instances to 
 this firewall.  SSH port number are changed to something more obscure.
 
+# Ansible
+
+## Dependencies
+
+To install galaxy roles and collections:
+
+* `make reqs`
+* `make forcereqs`
 
 ## bootstrap
 

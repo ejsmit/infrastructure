@@ -1,0 +1,20 @@
+
+- name: a playbook to configure a cloud ffed server
+  hosts: feedserver
+  remote_user: deploy
+  become: true
+
+  vars_files:
+    - ~/.private/ansible/vars/me-myself-and-i.yml
+    # - vars/telegram.vault.yml
+
+  roles:
+    - packages
+    - ufw
+    - logwatch
+    # - telegram
+    # - ejsmit.containers.podman
+    # - ejsmit.containers.traefik
+    # - ejsmit.containers.ttrss
+    # - ejsmit.containers.wallabag
+

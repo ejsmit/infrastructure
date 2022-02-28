@@ -1,5 +1,8 @@
-ansible/
 
+ansible/roles.old
+ansible/collections
+ansible/host_vars.old
+ansible/group_vars.old
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/ansible,terraform,visualstudiocode

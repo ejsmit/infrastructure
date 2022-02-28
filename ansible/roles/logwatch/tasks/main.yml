@@ -1,0 +1,75 @@
+---
+- name: install logwatch
+  apt:
+    name: logwatch
+    state: latest
+
+- name: create conf/logfiles directory
+  file:
+    path: /etc/logwatch/conf/logfiles
+    state: directory
+    mode: 0755
+
+- name: create conf/services directory
+  file:
+    path: /etc/logwatch/conf/services
+    state: directory
+    mode: 0755
+
+- name: create conf/html directory
+  file:
+    path: /etc/logwatch/conf/html
+    state: directory
+    mode: 0755
+
+- name: create scripts/services directory
+  file:
+    path: /etc/logwatch/scripts/services
+    state: directory
+    mode: 0755
+
+- name: install logwatch config
+  copy:
+    src: files/logwatch.conf
+    dest: /etc/logwatch/conf/logwatch.conf
+    mode: "0664"
+
+- name: install logwatch override config
+  copy:
+    src: files/override.conf
+    dest: /etc/logwatch/conf/override.conf
+    mode: "0664"
+
+- name: install logwatch ignore file
+  copy:
+    src: files/ignore.conf
+    dest: /etc/logwatch/conf/ignore.conf
+    mode: "0664"
+
+
+
+
+# - name: install logwatch scripts
+#   copy:
+#     src: files/scripts.services.{{item}}
+#     dest: /etc/logwatch/scripts/services/{{item}}
+#     mode: "0755"
+#   with_items:
+#     - mybackup
+
+# - name: install logwatch services conf
+#   copy:
+#     src: files/conf.services.{{item}}.conf
+#     dest: /etc/logwatch/conf/services/{{item}}.conf
+#     mode: "0664"
+#   with_items:
+#     - mybackup
+#     - secure
+
+# - name: install logwatch logfiles conf
+#   copy:
+#     src: files/conf.logfiles.{{item}}.conf
+#     dest: /etc/logwatch/conf/logfiles/{{item}}.conf
+#     mode: "0664"
+#   with_items:
+#     - mybackup

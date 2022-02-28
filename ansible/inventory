@@ -1,0 +1,72 @@
+# Cloud
+# =====
+
+[cloud:children]
+linode
+oracle
+
+[cloud:vars]
+host_domain=smit.org.uk
+ansible_host="{{inventory_hostname}}.{{host_domain}}"
+ansible_port=7109
+
+[linode]
+arwen
+
+[oracle]
+# none yet
+
+
+# Roles
+# =====
+
+[feedserver]
+arwen
+
+
+
+
+# Local
+# =====
+
+[local]
+localhost             ansible_connection=local
+
+
+[wsl]
+sauron.local
+
+
+[kubuntu]
+gandalf.home
+radagast.home
+
+[ubuntu-server]
+gollum.home
+
+
+
+[raspbian]
+smaug.home
+thorin.home
+
+
+[raspbian:vars]
+ansible_python_interpreter=/usr/bin/python3
+
+
+[servers]
+gollum.home
+smaug.home
+#thorin.home
+
+
+[desktops]
+radagast.home
+gandalf.home
+
+
+# bootstrap playbook should rename host to something more unique.
+[bootstrap]
+raspberrypi
+ubuntu

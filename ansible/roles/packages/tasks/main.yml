@@ -1,0 +1,35 @@
+
+
+- name: Run the equivalent of "apt update"
+  apt:
+    update_cache: yes
+    update_cache_retries: 2
+    upgrade: no
+  ignore_errors: true
+
+- name: Run the equivalent of "apt dist-upgrade"
+  apt:
+    update_cache: no
+    upgrade: dist
+
+# all_packages should already be installed, but lets redo them in case
+# something changed
+- name: install new packages
+  apt:
+    name: "{{all_packages + host_packages}}"
+    state: latest
+
+# the rest is needed for auto installations from github repositories.
+- name: install python deps
+  apt:
+    name:
+      - python3-dateutil
+      - python3-requests
+      - python3-uritemplate
+      - python3-jwcrypto
+
+# 
+- name: install github3.py using pip
+  pip:
+    name: github3.py
+    extra_args: --no-deps --user

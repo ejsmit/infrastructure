@@ -1,0 +1,68 @@
+---
+
+# default local key to use, unless overridden
+deploy_default_key: "/.ssh/id_ed25519.pub"
+timezone: Europe/London
+
+# Packages to install
+all_packages:
+  - python3
+  - python3-pip
+  - python3-apt
+  - mc
+  - acl
+  - tmux
+  - git
+  - wget
+  - curl
+  - ca-certificates
+  - apt-transport-https
+  - software-properties-common
+
+
+
+# # these defaults will be used if static ip addresses are enabled.
+# # the static ip need to be provided for eacyh individual host vars.
+# static_ip_addresses: ["{{static_ipv4_address}}", "{{static_ipv6_address}}"]
+# static_ipv4_gateway: 192.168.0.1
+# static_nameserver_search: [home]
+# static_nameserver_addresses: [192.168.0.2,"fd49:b985:7274::2"]
+
+
+# # role: email
+# # email_account: gandi
+# isp_email_server: mail.gandi.net
+# #mail_port: 587
+# # mail_from: "{{hostname}}@{{private_my_mail_domain}}"
+# email_domain: "{{private_my_email_domain}}"
+# isp_email_username: "{{private_my_email_username}}"
+# isp_email_password: "{{private_my_email_password}}"
+# # mail_root_email: "{{private_my_email}}"
+# # mail_default_email: "{{private_my_email}}"
+# # mail_server_hostname: "{{hostname_fqdn}}"
+
+# # role: dotfiles
+# dotfiles_project: ejsmit/dotfiles
+# fresh_install_url: https://raw.githubusercontent.com/ejsmit/fresh/master/install.sh
+
+
+# telegram_recipient_id:  2005678211
+
+
+# ssh_allowed_principals:
+#   - user-rsmit
+#   - user-pi
+
+
+
+# # role: certbot-gandi-dns
+# gandi_api_token: "{{private_gandi_api_token}}"
+# certbot_admin_email: "{{private_certbot_admin_email}}"
+# certbot_domains: "{{private_certbot_domains}}"
+
+# # traefik
+# letsencrypt_domain: "{{ private_my_dns_domain }}"
+
+
+# docker_version_armv7: "*"
+

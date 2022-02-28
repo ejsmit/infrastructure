@@ -1,0 +1,12 @@
+
+# default user to create
+default_user: rsmit
+
+
+# bootstrap security
+security_ssh_port: 7109
+security_autoupdate_enabled: true
+security_autoupdate_reboot: true
+security_autoupdate_mail_to: "root"
+security_fail2ban_enabled: true
+

@@ -1,0 +1,51 @@
+---
+- name: install ufw
+  apt:
+    name: ufw
+    state: present
+
+- name: disable and reset firewall
+  ufw:
+    state: reset
+
+- name: set default policy
+  ufw:
+    policy: "{{item.policy}}"
+    direction: "{{item.direction}}"
+  with_items:
+    - direction: incoming
+      policy: deny
+    - direction: outgoing
+      policy: allow
+    - direction: routed
+      policy: allow
+
+- name: open firewall for ssh
+  ufw:
+    rule: limit
+    port: "{{security_ssh_port}}"
+    proto: tcp
+
+- name: Allow podman internal networking
+  ufw:
+    rule: allow
+    interface: cni-podman0
+    direction: in
+
+- name: open firewall on specific tcp ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items: "{{ ufw_open_tcp_ports }}"
+
+- name: open firewall on specific udp ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: udp
+  with_items: "{{ ufw_open_udp_ports }}"
+
+- name: reload and enable firewall
+  ufw:
+    state: enabled

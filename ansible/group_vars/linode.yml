@@ -1,0 +1,9 @@
+---
+
+default_user: rsmit
+
+
+# linude specific public keys
+deploy_default_key: "/.ssh/id_ed25519_linode.pub"
+
+
