@@ -1,0 +1,13 @@
+
+
+
+# ttrss
+ttrss_pgsql_data_volume: /srv/ttrss-db
+
+# wallabag
+wallabag_pgsql_data_volume: /srv/wallabag-db
+wallabag_mailer_host: arwen.smit.org.uk
+
+# ufw
+ufw_open_tcp_ports: [80, 443]
+ufw_open_udp_ports: [51999]

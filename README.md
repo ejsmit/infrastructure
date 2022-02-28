@@ -80,3 +80,9 @@ problems if run again.
 
 Requires a yaml as first parameter.  A possible second argument to specify a single host
 if the playbook does not limit itself to a single host.
+
+
+# Thanks
+
+Thanks to https://github.com/selfhostedshow/infra for a few ideas.
+

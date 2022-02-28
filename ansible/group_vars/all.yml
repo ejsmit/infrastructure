@@ -21,6 +21,8 @@ all_packages:
 
 
 
+
+
 # # these defaults will be used if static ip addresses are enabled.
 # # the static ip need to be provided for eacyh individual host vars.
 # static_ip_addresses: ["{{static_ipv4_address}}", "{{static_ipv6_address}}"]

@@ -42,17 +42,19 @@ forcereqs:
 	cd ansible; ansible-galaxy role install -r requirements.yml --force
 	cd ansible; ansible-galaxy collection install -r requirements.yml --force
 
+decrypt:
+	cd ansible; ansible-vault decrypt vars/vault-cloud.yml
+
+encrypt:
+	cd ansible; ansible-vault encrypt --encrypt-vault-id ejsmit vars/vault-cloud.yml
+
+
 private: $(VAULTPASSWORD)
 
 $(VAULTPASSWORD):
 	@echo "ERROR: PRIVATE not mounted"
 	@false
 
-# decrypt:
-# 	cd ansible; ansible-vault decrypt vars/vault.yaml
-
-# encrypt:
-# 	cd ansible; ansible-vault encrypt vars/vault.yaml
 
 
 
