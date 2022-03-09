@@ -1,6 +1,9 @@
 VAULTPASSWORD = ~/.private/ansible/vault_password.txt
 
 
+help:
+	@echo My Infrastructure Project
+
 # Terraform
 
 tfinit:
@@ -18,19 +21,28 @@ tfdestroy:
 # Ansible
 
 feedserver: private
-	cd ansible; ansible-playbook -b run.yaml --limit demo
+	cd ansible; ansible-playbook feedserver.yml
 
-# demorepl:
-# 	cd ansible; ansible-playbook -b run.yaml --limit demo --tags replication
+dnsserver: private
+	cd ansible; ansible-playbook dnsserver.yml
 
-# democomp:
-# 	cd ansible; ansible-playbook run.yaml --limit demo --tags compose
+dnsserver_local: private
+	cd ansible; ansible-playbook dnsserver_local.yml
 
-# status:
-# 	cd ansible; ansible-playbook -b run.yaml --limit status --ask-become-pass
 
-# statuscomp:
-# 	cd ansible; ansible-playbook run.yaml --limit status --tags compose
+
+# Ansible bootstrap
+
+# usage: HOSTNAME=newname make bootstrap-raspbian
+bootstrap-raspbian: private
+	ssh-copy-id -i ~/.ssh/id_ed25519.pub pi@raspberrypi.local
+	cd ansible; ansible raspberrypi.local -m ping -u pi
+	cd ansible; ansible-playbook bootstrap-raspbian.yml
+
+
+
+
+
 
 # ansible housekeeping
 
@@ -42,10 +54,10 @@ forcereqs:
 	cd ansible; ansible-galaxy role install -r requirements.yml --force
 	cd ansible; ansible-galaxy collection install -r requirements.yml --force
 
-decrypt:
+decrypt: private
 	cd ansible; ansible-vault decrypt vars/vault-cloud.yml
 
-encrypt:
+encrypt: private
 	cd ansible; ansible-vault encrypt --encrypt-vault-id ejsmit vars/vault-cloud.yml
 
 
@@ -56,7 +68,4 @@ $(VAULTPASSWORD):
 	@false
 
 
-
-
-# Some private housekeeping
 

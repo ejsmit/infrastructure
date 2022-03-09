@@ -1,5 +1,5 @@
-# Cloud
-# =====
+; Cloud
+; =====
 
 [cloud:children]
 linode
@@ -14,59 +14,81 @@ ansible_port=7109
 arwen
 
 [oracle]
-# none yet
+; none yet
 
 
-# Roles
-# =====
+; Home
+; ====
+
+[home:children]
+raspbian
+kubuntu
+
+[cloud:vars]
+host_domain=home
+ansible_host="{{inventory_hostname}}.{{host_domain}}"
+
+
+; [raspbian:vars]
+; ansible_python_interpreter=/usr/bin/python3
+
+[raspbian]
+smaug
+
+[kubuntu]
+gandalf
+radagast
+
+
+
+; Roles
+; =====
 
 [feedserver]
 arwen
 
+[dnsserver]
+smaug
+
+[dnsserver_local]
+smaug                   ansible_host="{{inventory_hostname}}.local"
 
 
+; Local
+; =====
 
-# Local
-# =====
+; bootstrap playbook should rename host to something more unique.
+[bootstrap]
+raspberrypi.local
 
 [local]
 localhost             ansible_connection=local
 
-
-[wsl]
-sauron.local
-
-
-[kubuntu]
-gandalf.home
-radagast.home
-
-[ubuntu-server]
-gollum.home
+; special exception because this is my dns server.  All others will
+; immediately connect using their .home address
+[setup]
+smaug.local
 
 
 
-[raspbian]
-smaug.home
-thorin.home
+; [wsl]
+; sauron.local
 
 
-[raspbian:vars]
-ansible_python_interpreter=/usr/bin/python3
+
+; [ubuntu_server]
+; gollum.home
 
 
-[servers]
-gollum.home
-smaug.home
-#thorin.home
 
 
-[desktops]
-radagast.home
-gandalf.home
+; [servers]
+; gollum.home
+; thorin.home
 
 
-# bootstrap playbook should rename host to something more unique.
-[bootstrap]
-raspberrypi
-ubuntu
+; [desktops]
+; radagast.home
+; gandalf.home
+
+

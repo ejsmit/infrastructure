@@ -41,19 +41,52 @@ To install galaxy roles and collections:
 * `make reqs`
 * `make forcereqs`
 
-## bootstrap
 
-runs only once.  prepare target host for regular playbook.   Usually separate
-scripts per OS distribution/version.   Does the following:
+* `make decrypt`
+* `make encrypt`
 
-* make sure hostname is correct, especially for Raspberry pi servers which
-start out with a hardcoded name on the image
-* make sure deploy user exists   (where relevant)
-* install any ansible client prerequisites
 
-Run the script without parameters to display any required parameters.  This will
-usually be the address, sometimes with username, as well as new target hostname
-to rename to.
+## Structure
+
+Ansible playbooks exists at 2 levels:  bootstrap and role.
+
+
+### bootstrap
+
+Bootstrap playbooks ensure that the deploy user and default non-root user
+exists and that the keys to connect are copied to the host.
+It may also rename the host if required (usually only needed for local raspberry pi's).
+This is usually intended to be run only once and may not work if run again
+due to hosts being renamed, etc.
+
+* `make bootstrap-raspbian` 
+
+This will create the users and copy the keys. (some slight differences per environment - check
+the makefile and actual playbooks)
+
+* `HOSTNAME=newhostname make bootstrap-raspbian` 
+
+This will also rename the host. Not relevant in every environment.   I prefer to run it through 
+once without the new hostname just to confirm connectivity, and rerun with the new hostname.    
+A reboot will be forced if a new hostname is specified.
+
+### role based setup setup
+
+The second stage is the repeatable role-based setup. This should be designed to run multiple times
+without breaking anything.  The inventory file is used for role to host mappings. Everything else 
+is including in these steps, and it is recommended to add the security roles as early in the playbook
+as possible.
+
+* `make feedserver`
+
+
+The only exception is the dnsserver role, which has name resolution issues when it is down itself for updates,
+so there is a intermediate step to get the actual pihole installation working as early as possible.
+
+* `make dnssserver_local`
+* install pihole manually
+* `make dnsserver`
+
 
 ## Vault tools
 
@@ -86,3 +119,29 @@ if the playbook does not limit itself to a single host.
 
 Thanks to https://github.com/selfhostedshow/infra for a few ideas.
 
+
+
+# raspbian: 
+
+use pi
+- all deploy
+- all renamed
+
+# cloud:
+
+use root
+all rsmit
+- all deploy
+- rename optional
+
+# local ubuntu:
+
+use rsmit
+- all deploy
+- rename optional
+
+# desktop
+
+use rsmit
+- all deploy
+- rename optional
