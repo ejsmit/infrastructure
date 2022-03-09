@@ -50,14 +50,18 @@ To install galaxy roles and collections:
 
 Ansible playbooks exists at 2 levels:  bootstrap and role.
 
-
 ### bootstrap
 
 Bootstrap playbooks ensure that the deploy user and default non-root user
 exists and that the keys to connect are copied to the host.
 It may also rename the host if required (usually only needed for local raspberry pi's).
+
 This is usually intended to be run only once and may not work if run again
 due to hosts being renamed, etc.
+
+I also update the package metadata at this point.   I do not actually install anything yet
+but want to make sure package metadata exists.  Some roles expect it to be present and do 
+not update packages before attempting to install anything, and this prevent things from breaking.
 
 * `make bootstrap-raspbian` 
 

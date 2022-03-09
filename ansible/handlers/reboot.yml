@@ -23,8 +23,3 @@
     delay: 45
     sleep: 15
 
-- name: pause a bit
-  listen: "reboot and wait"
-  pause:
-    prompt: waiting a few more seconds to make sure server is really ready
-    seconds: 5

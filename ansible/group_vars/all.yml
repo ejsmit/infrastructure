@@ -22,6 +22,7 @@ all_packages:
 
 
 
+
 # # role: email
 # # email_account: gandi
 # isp_email_server: mail.gandi.net
@@ -39,7 +40,6 @@ all_packages:
 # fresh_install_url: https://raw.githubusercontent.com/ejsmit/fresh/master/install.sh
 
 
-# telegram_recipient_id:  2005678211
 
 
 # ssh_allowed_principals:

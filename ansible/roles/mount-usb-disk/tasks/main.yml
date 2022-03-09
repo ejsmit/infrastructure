@@ -1,0 +1,21 @@
+---
+
+# assume running as root.
+
+
+
+- name: copy systemd mount template
+  template:
+    src: 'media-disk.mount'
+    dest: '/etc/systemd/system/media-{{external_disk}}.mount'
+
+- name: enable mount
+  systemd:
+    daemon-reload: true
+    enabled: true
+    state: started
+    name: media-{{external_disk}}.mount
+
+- pause:
+   prompt: waiting a few more seconds to make sure disk is ready to use
+   seconds: 10

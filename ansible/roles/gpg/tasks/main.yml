@@ -1,0 +1,22 @@
+
+# root gets public keys only.  Only needed for encryption
+# default user gets private subkeys as well.  may need to sign, decrypt, etc.
+
+- name: install requried files
+  apt: 
+    name: 
+      - gnupg
+      - gpg-agent
+    state: latest
+
+
+- name: root configuration
+  include_tasks: root.yml
+
+- name: user configuration
+  include_tasks: user.yml
+
+- name: import gpg keys
+  include_tasks: keys.yml
+
+

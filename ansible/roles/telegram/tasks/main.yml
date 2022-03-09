@@ -1,0 +1,28 @@
+---
+
+- name: ensure telegram config directory exists
+  ansible.builtin.file:
+    path: /etc/telegram
+    owner: root
+    group: root
+    mode: '0755'
+    state: 'directory'
+
+- name: install telegram-notify
+  copy:
+    src: files/telegram-notify
+    dest: /usr/local/bin/telegram-notify
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: install telegram-notify.conf
+  template:
+    src: telegram-notify.conf
+    dest: /etc/telegram/telegram-notify.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: send test message
+  command: telegram-notify --success --text "*{{hostname}}* telegram-notify installed successfully"

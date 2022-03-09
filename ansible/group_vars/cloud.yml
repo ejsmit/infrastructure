@@ -1,6 +1,5 @@
 
-# default user to create
-default_user: rsmit
+
 
 # bootstrap security
 security_ssh_port: 7109

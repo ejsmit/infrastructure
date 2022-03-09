@@ -1,0 +1,10 @@
+network:
+    ethernets:
+        eth0:
+            dhcp4: no
+            addresses: {{static_ip_addresses}}
+            gateway4: {{static_ipv4_gateway}}
+            nameservers:
+              search: {{static_nameserver_search}}
+              addresses: {{static_nameserver_addresses}}
+    version: 2

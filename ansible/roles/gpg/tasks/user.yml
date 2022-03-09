@@ -1,0 +1,34 @@
+
+- name: ensure default user .gnupg exists exists
+  ansible.builtin.file:
+    path: /home/{{default_user}}/.gnupg
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
+    mode: '0700'
+    state: 'directory'
+
+- name: ensure a basic gpg config file exists
+  ansible.builtin.stat:
+    path: /home/{{default_user}}/.gnupg/gpg.conf
+  register: gpg_conf
+
+- name: Copy gpg.conf
+  copy:
+    src: gpg.conf
+    dest: /home/{{default_user}}/.gnupg/gpg.conf
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
+  when: not gpg_conf.stat.exists
+
+- name: ensure a basic gpg agent config file exists
+  ansible.builtin.stat:
+    path: /home/{{default_user}}/.gnupg/gpg-agent.conf
+  register: gpg_agent_conf
+
+- name: Copy gpg-agent.conf
+  copy:
+    src: gpg-agent.conf
+    dest: /home/{{default_user}}/.gnupg/gpg-agent.conf
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
+  when: not gpg_agent_conf.stat.exists

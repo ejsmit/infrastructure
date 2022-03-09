@@ -1,0 +1,96 @@
+
+# requires playbook reboot and wait handler.
+
+- name: Disable cloud-init networking for static ip
+  copy:
+    dest: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+    content: "network: {config: disabled}"
+  when: enable_static_ip == true
+  notify: reboot and wait
+
+- name: remove cloud-init netplan config
+  file:
+    path: /etc/netplan/50-cloud-init.yaml
+    state: absent
+  when: enable_static_ip == true
+  notify: reboot and wait
+
+- name: set static ip
+  template:
+    dest: /etc/netplan/01-netcfg.yaml
+    src: 01-netcfg.yaml
+  when: enable_static_ip == true
+  notify: reboot and wait
+
+- name: check dns config
+  stat:
+    path: "/etc/resolv.conf"
+  register: resolv_conf
+
+- name: relink resolv.conf to the correct config
+  file:
+    src: "../run/systemd/resolve/resolv.conf"
+    dest: /etc/resolv.conf
+    state: link
+  when: resolv_conf.stat.islnk is defined and resolv_conf.stat.lnk_target == '../run/systemd/resolve/stub-resolv.conf'
+
+- name: change ubuntu user password
+  user:
+    name: ubuntu
+    password: "!"
+    shell: '/usr/bin/false'
+
+- name: create default group
+  group:
+    name: "{{default_user}}"
+
+- name: create default user
+  user:
+    name: "{{default_user}}"
+    group: "{{default_user}}"
+    groups: adm,dialout,sudo,cdrom,floppy,audio,dip,video,plugdev,netdev,lxd
+    password: "{{ default_user_password_hash }}"
+    shell: '/bin/bash'
+
+- name: get current timezone
+  command: cat /etc/timezone
+  register: current_timezone
+  changed_when: false
+
+- name: fix timezone if required
+  command: timedatectl set-timezone {{timezone}}
+  when: current_timezone.stdout != timezone
+
+- name: disable serial port
+  lineinfile:
+    dest: /boot/firmware/config.txt
+    regexp: "enable_uart="
+    line: "enable_uart=0"
+    state: present
+  notify: reboot and wait
+
+- name: remove serial getty
+  replace:
+    path: /boot/firmware/cmdline.txt
+    regexp: ' console=serial0,115200'
+    replace: ''
+  notify: reboot and wait
+
+- name: disable bluetooth & wifi
+  lineinfile:
+    dest: /boot/firmware/config.txt
+    state: present
+    regexp: '^dtoverlay='
+    line: 'dtoverlay=dwc2,disable-wifi,disable-bt'
+  when: disable_wifi_bt == true
+  notify: reboot and wait
+
+- name: stop hciaurt when wifi isdisabled
+  systemd:
+    name: hciuart
+    state: stopped
+    enabled: false
+  when: disable_wifi_bt == true
+
+- name: reboot if we need to
+  meta: flush_handlers

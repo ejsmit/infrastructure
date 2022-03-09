@@ -5,7 +5,7 @@
     update_cache: yes
     update_cache_retries: 2
     upgrade: no
-  ignore_errors: true
+  ignore_errors: yes
 
 - name: Run the equivalent of "apt dist-upgrade"
   apt:

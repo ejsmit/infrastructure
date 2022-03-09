@@ -16,9 +16,6 @@ static_ipv6_address: "2a01:7e00::f03c:93ff:fe84:e53e"
 
 
 
-
-
-
 default_user_password_hash: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           38346266633731323361333861353235363564653533623531336564313262353364366462623334

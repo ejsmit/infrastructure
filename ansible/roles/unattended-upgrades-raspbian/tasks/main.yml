@@ -1,0 +1,22 @@
+---
+
+
+- name: install unattended upgrade packages
+  apt:
+    name:
+      - unattended-upgrades
+    state: latest
+  when: ansible_lsb.id == 'Raspbian'
+
+
+- name: install auto update configuration files
+  copy:
+    src: '{{item}}-raspbian'
+    dest: '/etc/apt/apt.conf.d/{{item}}'
+  when: ansible_lsb.id == 'Raspbian'
+  with_items:
+    - 50unattended-upgrades
+    - 20auto-upgrades
+
+
+

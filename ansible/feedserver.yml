@@ -9,6 +9,7 @@
     # - vars/telegram.vault.yml
 
   roles:
+    - geerlingguy.security
     - packages
     - ufw
     - logwatch

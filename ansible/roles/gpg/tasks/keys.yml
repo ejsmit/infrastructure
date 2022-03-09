@@ -1,0 +1,65 @@
+- name: Copy gpg public key
+  copy:
+    content: "{{gpg_public_key}}"
+    dest: "/home/{{default_user}}/{{gpg_public_key_name}}"
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
+
+- name: Copy gpg private key
+  copy:
+    content: "{{gpg_private_key}}"
+    dest: "/home/{{default_user}}/{{gpg_private_key_name}}"
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
+
+- name: Copy gpg ownertrust
+  copy:
+    content: "{{gpg_ownertrust}}"
+    dest: "/home/{{default_user}}/{{gpg_ownertrust_name}}"
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
+
+- name: import root public key
+  command: "gpg --import /home/{{default_user}}/{{gpg_public_key_name}}"
+
+- name: import root trust
+  shell: "gpg --import-ownertrust < /home/{{default_user}}/{{gpg_ownertrust_name}}"
+
+
+# start block for become default user
+- block:
+# dashes 4 indent inside block
+
+    - name: import defauilt user public key
+      command: "gpg --import /home/{{default_user}}/{{gpg_public_key_name}}"
+
+    - name: import default user private subkeys
+      command:
+        argv:
+          - "gpg"
+          - "--import"
+          - "--batch"
+          - "--pinentry-mode=loopback"
+          - "--passphrase={{gpg_private_key_passphrase}}"
+          - "/home/{{default_user}}/{{gpg_private_key_name}}"
+
+    - name: import default user trust
+      shell: "gpg --import-ownertrust < /home/{{default_user}}/{{gpg_ownertrust_name}}"
+
+# end block for become default user (2 indent)
+  become_user: "{{default_user}}"
+
+- name: Remove gpg private key file
+  file:
+    path: "/home/{{default_user}}/{{gpg_private_key_name}}"
+    state: absent
+
+- name: Remove gpg public key file
+  file:
+    path: "/home/{{default_user}}/{{gpg_public_key_name}}"
+    state: absent
+
+- name: Remove gpg owner trust file
+  file:
+    path: "/home/{{default_user}}/{{gpg_ownertrust_name}}"
+    state: absent

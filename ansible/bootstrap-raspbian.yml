@@ -24,6 +24,11 @@
       hostname:
         name: "{{new_hostname}}"
 
+    - name: update package metadata
+      apt:
+        update_cache: yes
+        upgrade: no
+
     - name: reboot
       async: 1
       poll: 0
