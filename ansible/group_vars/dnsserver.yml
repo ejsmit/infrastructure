@@ -1,0 +1,7 @@
+---
+
+# # certbot
+# certbot_domains:
+#   - "{{private_my_dns_domain}}"
+#   - "*.{{private_my_dns_domain}}"
+

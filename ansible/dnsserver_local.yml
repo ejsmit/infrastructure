@@ -1,0 +1,76 @@
+- name: a playbook to configure smaug.local
+  hosts: dnsserver_local
+  remote_user: deploy
+  become: true
+
+  vars_files:
+    # - ~/.private/ansible/vars/me-myself-and-i.yml
+    # - ~/.private/ansible/vars/gpg-privkey.vault.yml
+    # - vars/gpg-pubkey.vault.yml
+    # - vars/telegram.vault.yml
+    # - vars/nextcloud-client.vault.yml
+
+  handlers:
+  - include: handlers/reboot.yml
+
+
+  pre_tasks:
+    - name: update package metadata
+      apt:
+        update_cache: yes
+        upgrade: no
+
+  roles:
+    - role: setup-raspbian   
+      vars:
+        static_nameserver_addresses: ["{{static_ipv4_gateway}}"]
+    - geerlingguy.security
+
+
+
+  # tasks:
+  #   - name: Run the equivalent of "apt dist-upgrade"
+  #     apt:
+  #       update_cache: no
+  #       upgrade: dist
+  #   - name: install new packages
+  #     apt:
+  #       name: "{{all_packages}}"
+  #       state: latest
+  #   # cannot use my preferred wait_for_connection because the host is renamed
+  #   # and we now need to specify a new name to wait for.
+  #   - name: wait for remote
+  #     ansible.builtin.wait_for:
+  #       timeout: 300
+  #       delay: 45
+  #       connect_timeout: 10
+  #       host: "{{new_hostname}}"
+  #       port: 22
+  #     become: false  
+  #     delegate_to: localhost
+
+
+  # roles:
+    # - packages
+    # - gpg
+    # - telegram
+    # - email
+    # - pi-unattended-upgrades
+    # - dotfiles
+    # - motd
+    # - nextcloud-client-tools
+    # - certbot-gandi-dns
+    # - ssh-certs
+    # - pihole
+
+  # tasks:
+
+  # - cron:
+  #     name: "Auto nightly reboot"
+  #     minute: "15"
+  #     hour: "3"
+  #     job: "/sbin/shutdown -r now"
+  #     cron_file: reboot
+  #     user: root
+
+
