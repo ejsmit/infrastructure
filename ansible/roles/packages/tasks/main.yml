@@ -28,7 +28,6 @@
       - python3-uritemplate
       - python3-jwcrypto
 
-# 
 - name: install github3.py using pip
   pip:
     name: github3.py

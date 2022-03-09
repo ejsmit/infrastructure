@@ -1,0 +1,15 @@
+---
+
+timezone: Europe/London
+
+disable_wifi_bt: false
+
+enable_static_ip: false
+static_ipv4_address: 192.168.1.10
+static_ipv6_address: "fd49:1111:2222::10"
+static_ipv4_subnet: 24
+static_ipv6_subnet: 64
+static_ipv4_gateway: 192.168.1.1
+
+static_nameserver_search: [home]
+static_nameserver_addresses: [192.168.0.2,"fd49:1111:2222::2"]

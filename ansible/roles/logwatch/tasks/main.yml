@@ -45,31 +45,3 @@
     src: files/ignore.conf
     dest: /etc/logwatch/conf/ignore.conf
     mode: "0664"
-
-
-
-
-# - name: install logwatch scripts
-#   copy:
-#     src: files/scripts.services.{{item}}
-#     dest: /etc/logwatch/scripts/services/{{item}}
-#     mode: "0755"
-#   with_items:
-#     - mybackup
-
-# - name: install logwatch services conf
-#   copy:
-#     src: files/conf.services.{{item}}.conf
-#     dest: /etc/logwatch/conf/services/{{item}}.conf
-#     mode: "0664"
-#   with_items:
-#     - mybackup
-#     - secure
-
-# - name: install logwatch logfiles conf
-#   copy:
-#     src: files/conf.logfiles.{{item}}.conf
-#     dest: /etc/logwatch/conf/logfiles/{{item}}.conf
-#     mode: "0664"
-#   with_items:
-#     - mybackup

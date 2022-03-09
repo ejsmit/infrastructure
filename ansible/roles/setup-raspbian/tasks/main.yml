@@ -1,0 +1,65 @@
+
+# requires playbook reboot and wait handler.
+
+- name: set static ip
+  blockinfile:
+    path: /etc/dhcpcd.conf
+    block: |
+      interface eth0
+          static domain_name={{static_nameserver_search|join(',')}}
+          static domain_search={{static_nameserver_search|join(',')}}
+          static ip_address={{static_ipv4_address}}/{{static_ipv4_subnet}}
+          static ip6_address={{static_ipv6_address}}/{{static_ipv6_subnet}}
+          static routers={{static_ipv4_gateway}}
+          static domain_name_servers={{static_nameserver_addresses|join(',')}}
+  when: enable_static_ip
+  notify: reboot and wait
+
+- name: change pi user password
+  user:
+    name: pi
+    password: "{{ pi_password_hash }}"
+
+- name: get current timezone
+  command: cat /etc/timezone
+  register: current_timezone
+  changed_when: false
+
+- name: fix timezone if required
+  command: timedatectl set-timezone {{timezone}}
+  when: current_timezone.stdout != timezone
+
+- name: disable serial port
+  lineinfile:
+    dest: /boot/config.txt
+    regexp: "enable_uart="
+    line: "enable_uart=0"
+    state: present
+  notify: reboot and wait
+
+- name: remove serial getty
+  replace:
+    path: /boot/cmdline.txt
+    regexp: ' console=serial0,115200'
+    replace: ''
+  notify: reboot and wait
+
+- name: disable bluetooth & wifi
+  lineinfile:
+    dest: /boot/config.txt
+    state: present
+    regexp: '(^dtoverlay=.*)'
+    line: '\1,disable-wifi,disable-bt'
+    backrefs: yes
+  when: disable_wifi_bt == true
+  notify: reboot and wait
+
+- name: stop hciaurt when wifi isdisabled
+  systemd:
+    name: hciuart
+    state: stopped
+    enabled: false
+  when: disable_wifi_bt == true
+
+- name: reboot if we need to
+  meta: flush_handlers
