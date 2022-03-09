@@ -1,0 +1,8 @@
+
+
+# security
+# no auto updates at home.  raspbian to no issue security updates.
+security_ssh_port: 22
+security_autoupdate_enabled: false
+security_fail2ban_enabled: true
+

@@ -1,0 +1,33 @@
+---
+
+- name: a playbook to bootstrap a generic host with a deploy user
+  hosts: 'raspberrypi.local'
+  remote_user: pi
+  become: true
+
+  vars_files:
+    - vars/deploy-user.yml
+
+  tasks:
+    - include_role:
+        name: create-user
+      vars:
+        name: deploy
+        password_hash: "{{deploy_password_hash}}"
+        default_key: "/.ssh/id_ed25519.pub"
+        password_sudo: no
+
+    - set_fact:
+        new_hostname: "{{ lookup('env', 'HOSTNAME') }}"
+    
+    - name: change hostname
+      hostname:
+        name: "{{new_hostname}}"
+
+    - name: reboot
+      async: 1
+      poll: 0
+      ignore_errors: true
+      shell: sleep 5 && shutdown -r now
+      when: new_hostname != ''
+

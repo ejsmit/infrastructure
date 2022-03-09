@@ -1,7 +1,6 @@
 ---
 
 # default local key to use, unless overridden
-deploy_default_key: "/.ssh/id_ed25519.pub"
 timezone: Europe/London
 
 # Packages to install
@@ -21,14 +20,6 @@ all_packages:
 
 
 
-
-
-# # these defaults will be used if static ip addresses are enabled.
-# # the static ip need to be provided for eacyh individual host vars.
-# static_ip_addresses: ["{{static_ipv4_address}}", "{{static_ipv6_address}}"]
-# static_ipv4_gateway: 192.168.0.1
-# static_nameserver_search: [home]
-# static_nameserver_addresses: [192.168.0.2,"fd49:b985:7274::2"]
 
 
 # # role: email

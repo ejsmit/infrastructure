@@ -1,0 +1,33 @@
+---
+
+- name: a playbook to bootstrap a generic host with a deploy user
+  hosts: '{{host}}'
+  remote_user: root
+
+  vars_files:
+    - vars/deploy-user.yml
+
+  tasks:
+
+    - include_role:
+        name: create-user
+      vars:
+        name: deploy
+        password_hash: "{{deploy_password_hash}}"
+        default_key: "/.ssh/id_ed25519.pub"
+        password_sudo: no
+
+    - include_role:
+        name: create-user
+      vars:
+        name: {{default_user}}
+        password_hash: "{{deploy_password_hash}}"
+        default_key: "/.ssh/id_ed25519.pub"
+
+    - set_fact:
+        new_hostname: {{ lookup('env', 'HOSTNAME') }}
+
+    - name: change hostname
+      hostname:
+        name: {{new_hostname}}
+      when: "{{new_hostname != ''}}"

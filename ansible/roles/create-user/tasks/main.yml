@@ -1,0 +1,65 @@
+
+---
+
+- name: Create user group
+  group:
+    name: "{{name}}"
+    state: present
+
+- name: Add default user
+  user:
+    name: "{{name}}"
+    shell: /bin/bash
+    group: "{{name}}"
+    state: present
+    password: "{{password_hash}}"
+
+- name: Ensure sudoers.d is enabled
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    backup: yes
+    regexp: '^#includedir /etc/sudoers.d'
+    line: '#includedir /etc/sudoers.d'
+
+# one of the following two will be used depending on password_sudo:
+
+- name: Set up passworded sudo for user
+  copy:
+    content: "{{name}} ALL=(ALL) ALL"
+    dest: "/etc/sudoers.d/{{name}}"
+    owner: root
+    group: root
+    mode: 0440
+  when: password_sudo
+
+- name: Set up passwordless sudo for user
+  copy:
+    content: "{{name}} ALL=(ALL) NOPASSWD:ALL"
+    dest: "/etc/sudoers.d/{{name}}"
+    owner: root
+    group: root
+    mode: 0440
+  when: not password_sudo
+
+- name: Add authorized keys for  user
+  authorized_key:
+    user: "{{name}}"
+    key: "{{ lookup('file', lookup('env','HOME') + '{{default_key}}') }}"
+    manage_dir: yes
+
+
+
+- name: Set up password-less sudo for deploy
+  copy:
+    content: "deploy ALL=(ALL) NOPASSWD:ALL"
+    dest: "/etc/sudoers.d/deploy"
+    owner: root
+    group: root
+    mode: 0440
+
+- name: Add authorized keys for deploy user
+  authorized_key:
+    user: deploy
+    key: "{{ lookup('file', lookup('env','HOME') + '{{deploy_default_key}}') }}"
+    manage_dir: yes
