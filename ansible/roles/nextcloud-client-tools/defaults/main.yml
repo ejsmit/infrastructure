@@ -1,0 +1,8 @@
+---
+
+
+dns_domain: example.org
+
+# vault/nextcloud
+nextcloud_user: username
+nextcloud_password: password

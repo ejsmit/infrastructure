@@ -1,0 +1,23 @@
+
+- name: install rclone and gocryptfs
+  apt:
+    name:
+      - fuse3
+      - rclone
+      - gocryptfs
+      - sshfs
+    state: latest
+
+- name: create rclone config directory
+  file:
+    path: /root/.config/rclone
+    state: directory
+    mode: '750'
+
+- name: create rclone config for nextcloud for root user
+  template:
+    src: rclone.conf
+    dest: /root/.config/rclone/rclone.conf
+    owner: root
+    group: root
+    mode: '640'
