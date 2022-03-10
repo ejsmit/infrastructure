@@ -1,0 +1,52 @@
+---
+
+# create local temp
+
+- name: Create local temporary directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: sshcert
+  register: certtemp
+
+- name: Copy CA private key to temp
+  copy:
+    src: "~/.private/apps/ssh-ca/ca-key"
+    dest: "{{ certtemp.path }}/ca-key"
+    mode: "0600"
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
+
+
+# find user key
+
+- name: create user key if one does not exist
+  community.crypto.openssh_keypair:
+    path: "~/.ssh/id_ed25519"
+    type: ed25519
+  
+- name : Find remote ssh host keys
+  stat:
+    path: "~/.ssh/id_ed25519.pub"
+  register: ssh_host_key
+
+# create cert
+
+- community.crypto.openssh_cert:
+    type: user
+    identifier: "user:{{default_user}}@{{hostname}}"
+    signing_key: "{{ certtemp.path }}/ca-key"
+    public_key: "{{ssh_host_key.stat.path}}"
+    path: "{{ssh_host_key.stat.path | splitext | first}}-cert.pub"
+    valid_from: "-5m"
+    valid_to: "+365d"
+    valid_at: "+2w"
+    serial_number: 0
+    principals:
+    - "user-{{default_user}}"
+
+# remove temp
+
+- name: remove temp
+  ansible.builtin.file:
+    path: "{{ certtemp.path }}"
+    state: absent

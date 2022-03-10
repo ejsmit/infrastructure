@@ -9,7 +9,8 @@
     - ~/.private/ansible/vars/gpg-privkey.vault.yml
     - vars/gpg-pubkey.vault.yml
     - vars/telegram.vault.yml
-    # - vars/nextcloud-client.vault.yml
+    - vars/nextcloud-client.vault.yml
+    - vars/ssh-certs.vault.yml
 
   handlers:
   - include: handlers/reboot.yml
@@ -18,18 +19,19 @@
     # - setup-raspbian
     # - geerlingguy.security
     # - packages
-    # - logwatch
     # - unattended-upgrades-raspbian
     # - gpg
-    - telegram
+    # - telegram
+    # - nextcloud-client-tools
+    # - postfix-relay
+    # - logwatch
+    - ssh-certs
 
 
-    # - email
     # - dotfiles
     # - motd
-    # - nextcloud-client-tools
+
     # - certbot-gandi-dns
-    # - ssh-certs
 
   tasks:
 

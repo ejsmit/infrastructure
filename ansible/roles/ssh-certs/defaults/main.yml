@@ -1,0 +1,5 @@
+ssh_allowed_principals:
+  - principal1
+  - principal2
+
+default_user: username

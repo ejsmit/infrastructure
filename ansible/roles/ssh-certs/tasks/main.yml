@@ -1,0 +1,115 @@
+---
+
+# Initial setup
+
+- name: Copy CA public key to /etc/ssh
+  copy:
+    content: "{{ ssh_ca_pubkey }}"
+    dest: /etc/ssh/{{ssh_ca_pubkey_name}}
+    mode: "0664"
+    owner: root
+    group: root
+
+
+
+# Host Keys
+# =========
+
+# add cert authority to auto trust other signed hosts
+
+- name: Update system known_hosts to trust CA for host keys
+  lineinfile:
+    path: /etc/ssh/ssh_known_hosts
+    regex: '^[@]cert-authority [*]'
+    line: "@cert-authority * {{ ssh_ca_pubkey }}"
+    create: true
+
+# check if host certs already exist
+- name : Find ssh host certificates
+  find:
+    paths: /etc/ssh
+    recurse: no
+    patterns: 'ssh_host_*_key-cert.pub'
+  register: ssh_host_certs
+
+# and create certs if they dont exist
+
+- block:
+  - name: "Include tasks for host keys"
+    include_tasks: host.yml
+  when: ssh_host_certs.matched == 0
+
+
+# Publish our certificates so others can trust us.
+- name : Find ssh host certificates
+  find:
+    paths: /etc/ssh
+    recurse: no
+    patterns: 'ssh_host_*_key-cert.pub'
+  register: ssh_host_certs
+
+- name: Update sshd_config with HostCertificate
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: HostCertificate {{ item.path }}
+  loop: "{{ssh_host_certs.files}}"
+  notify:
+    - restart sshd
+
+
+
+# User Certificates
+# =================
+
+# Tell sshd to trust remote user certificates trying to connect to us
+
+- name: Update sshd_config with TrustedUserCAKeys
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^TrustedUserCAKeys '
+    line: TrustedUserCAKeys /etc/ssh/{{ssh_ca_pubkey_name}}
+  notify:
+    - restart sshd
+
+# valid usernames for remote users allowed to connect to us
+
+- name: make sure principal mapping folder exists
+  ansible.builtin.file:
+    path: /etc/ssh/auth_principals
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Create principal mapping for user deploy
+  copy:
+    content: "{% for item in ssh_allowed_principals %}{{ item + '\n'}}{% endfor %}"
+    dest: /etc/ssh/auth_principals/deploy
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Create principal mapping for default user
+  copy:
+    content: "{% for item in ssh_allowed_principals %}{{ item + '\n'}}{% endfor %}"
+    dest: /etc/ssh/auth_principals/{{default_user}}
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Enable principal mapping in sshd_config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: "AuthorizedPrincipalsFile /etc/ssh/auth_principals/%u"
+  notify:
+    - restart sshd
+
+# we need to create a certificate to connect to other remote hosts.
+# but the config to send certificates when is done in ./ssh/config
+# All we need to do here is to ensure certificate exist
+
+- block:
+  - name: "Include tasks for host keys"
+    include_tasks: user.yml
+  # when: ssh_host_certs.matched == 0
+  become_user: "{{default_user}}"
