@@ -1,0 +1,8 @@
+
+hostname.fqdn: foo.example.org
+email_domain: example.org
+email_address: me@example.org
+
+isp_email_server: mail.example.org
+isp_email_username: username
+isp_email_password: password

@@ -1,0 +1,84 @@
+---
+- name: Ensure postfix is installed.
+  package:
+    name: 
+      - postfix 
+      - libsasl2-modules
+    state: present
+
+- name: Create postfix mail relay password file
+  copy:
+    content: "[{{isp_email_server}}] {{isp_email_username}}:{{isp_email_password}}\n"
+    dest: /etc/postfix/sasl_passwd
+    owner: root
+    group: root
+    mode: '0600'
+  register: passwords_changed
+
+- name: Create postfix mail relay password db
+  command: postmap /etc/postfix/sasl_passwd
+  when: passwords_changed.changed
+
+- name: Create debian mailname file for local mail
+  copy:
+    content: "{{hostname_fqdn}}"
+    dest: /etc/mailname
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create mail aliases file
+  template:
+    src: aliases
+    dest: /etc/aliases
+    owner: root
+    group: root
+    mode: '0755'
+  register: aliases_changed
+
+- name: Update aliases
+  command: newaliases
+  when: aliases_changed.changed
+
+- name: Update Postfix configuration
+  lineinfile:
+    dest: "/etc/postfix/main.cf"
+    line: "{{ item.name }} = {{ item.value }}"
+    regexp: "^{{ item.name }}\\s?="
+    mode: '0644'
+  with_items:
+    - name: myhostname
+      value: "{{hostname_fqdn}}"
+    - name: mydestination
+      value: "$myhostname localhost.$mydomain localhost"
+    - name: myorigin
+      value: /etc/mailname
+    - name: mynetworks
+      value: "127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
+    - name: mydestination
+      value: "$myhostname localhost.$mydomain localhost"
+    - name: relayhost
+      value: "[{{isp_email_server}}]"
+    - name: relay_domains
+      value: ""
+    - name: inet_interfaces
+      value: "loopback-only"
+    - name: inet_protocols
+      value: "ipv4"
+    - name: smtp_sasl_auth_enable
+      value: "yes"
+    - name: smtp_sasl_security_options
+      value: noanonymous
+    - name: smtp_sasl_password_maps
+      value: hash:/etc/postfix/sasl_passwd
+    - name: smtp_use_tls
+      value: "yes"
+    - name: smtp_tls_security_level
+      value: encrypt
+  notify: restart postfix
+
+- name: Ensure postfix is started and enabled at boot.
+  service:
+    name: postfix
+    state: started
+    enabled: true
