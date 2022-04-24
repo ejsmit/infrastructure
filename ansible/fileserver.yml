@@ -1,0 +1,66 @@
+
+
+- name: a playbook to configure gollum.home
+  hosts: fileserver
+  remote_user: deploy
+  become: true
+
+  vars_files:
+    - ~/.private/ansible/vars/me-myself-and-i.yml
+    - ~/.private/ansible/vars/gpg-privkey.vault.yml
+    - vars/gpg-pubkey.vault.yml
+    - vars/telegram.vault.yml
+    - vars/nextcloud-client.vault.yml
+    - vars/ssh-certs.vault.yml
+    - vars/vault.yml
+    # - vars/samba.vault.yml
+    # - vars/vaultwarden.vault.yml
+
+
+  handlers:
+    - include: handlers/reboot.yml
+
+  collections:
+    - ejsmit.containers
+
+  roles:
+    # - setup-ubuntu-pi
+    # - geerlingguy.security
+    # - packages
+    # - unattended-upgrades-raspbian
+    # - gpg
+    # - telegram
+    # - file-tools
+    # - postfix-relay
+    # - logwatch
+    # - ssh-certs
+
+
+    # - dotfiles
+    # - motd
+    # - nextcloud-client-tools
+    # - install_certs
+    # - ssh-certs
+    # - podman
+    - traefik
+    # - smtp-relay
+    # - samba-pi
+    # - syncthing
+    # - nextcloud
+    # - wallabag
+    # - vaultwarden
+    # - minio
+    # - ttrss
+
+
+
+  tasks:
+
+
+# --------------------------
+#   forced reboot
+# --------------------------
+
+  # - debug: msg="Trigger Reboot"
+  #   notify: reboot and wait
+  #   changed_when: true

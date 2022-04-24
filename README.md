@@ -41,9 +41,28 @@ To install galaxy roles and collections:
 * `make reqs`
 * `make forcereqs`
 
+## Vault
+
+Ansible Vault is used to encrypt sensitive data.   There are various vault files.
+
+- `me-myself-and-i.yaml`:  lives outside the infrastructure project and versioned using separate means.  Will 
+  never end up in git.   This is most personally identifiable information that I don't even want to
+  be on github.
+- `vault.yml`: This is the generic vault file containing most passwords
+- *All others vault files*: usually separate larger data fields, such as keys/certificates.
+
+`vault.yml` can be easily encrypted and decrypted from the command line using these commands:
 
 * `make decrypt`
 * `make encrypt`
+
+Some scripts exist in `tools` directory to encrypt data.
+
+## deploy user
+
+This is the user that ansible will use to connect to other hosts.  This user will be automatically 
+created on remote systems during bootstrap.  Uses passwordless key logins.  Never use this
+user for anything except ansible remote ansible connections.
 
 
 ## Structure
@@ -92,60 +111,7 @@ so there is a intermediate step to get the actual pihole installation working as
 * `make dnsserver`
 
 
-## Vault tools
-
-Scripts to encrypt sensitive information into ansible vault.  Personal preference is
-for vault files to be manually and explicitly included where needed, and not form
-part of host_vars.   The password file option is included on the command line and
-points to a encrypted volume on disk that can be mounted and unmounted when required.
-
-Two scripts:
-- encrypt passwords:  save both the encrypted password and password hash to a yaml file.  if one is not needed then it van be manually deleted.
-- encrypt file contents:  save both file contents and file name to a yaml file.  I typically use this for certificates that need to be deployed.
-
-
-## deploy user
-
-New user, used with ssh key logins, passwordless sudo enabled.  Never use this
-user for anything except remote ansible connections.
-
-## run.sh script
-
-The main script to configure the system.   Don't blindly run this more than once. For me
-the main use is initial configuration of my own systems, so parts of it will cause
-problems if run again.
-
-Requires a yaml as first parameter.  A possible second argument to specify a single host
-if the playbook does not limit itself to a single host.
-
-
 # Thanks
 
 Thanks to https://github.com/selfhostedshow/infra for a few ideas.
 
-
-
-# raspbian: 
-
-use pi
-- all deploy
-- all renamed
-
-# cloud:
-
-use root
-all rsmit
-- all deploy
-- rename optional
-
-# local ubuntu:
-
-use rsmit
-- all deploy
-- rename optional
-
-# desktop
-
-use rsmit
-- all deploy
-- rename optional

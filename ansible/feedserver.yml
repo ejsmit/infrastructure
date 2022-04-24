@@ -1,11 +1,12 @@
 
-- name: a playbook to configure a cloud ffed server
+- name: a playbook to configure a cloud feed server
   hosts: feedserver
   remote_user: deploy
   become: true
 
   vars_files:
     - ~/.private/ansible/vars/me-myself-and-i.yml
+    - vars/vault.yml
     # - vars/telegram.vault.yml
 
   roles:

@@ -65,10 +65,10 @@ forcereqs:
 	cd ansible; ansible-galaxy collection install -r requirements.yml --force
 
 decrypt: private
-	cd ansible; ansible-vault decrypt vars/vault-cloud.yml
+	cd ansible; ansible-vault decrypt vars/vault.yml
 
 encrypt: private
-	cd ansible; ansible-vault encrypt --encrypt-vault-id ejsmit vars/vault-cloud.yml
+	cd ansible; ansible-vault encrypt --encrypt-vault-id ejsmit vars/vault.yml
 
 
 private: $(VAULTPASSWORD)

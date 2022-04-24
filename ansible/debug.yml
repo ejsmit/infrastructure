@@ -1,0 +1,20 @@
+
+
+---
+- name: dump vars
+  hosts: dnsserver
+  remote_user: deploy
+  become: true
+  gather_facts: false
+
+  vars_files:
+    - vars/container-nextcloud.vault.yml
+
+  tasks:
+    - name: print variables
+      debug: msg="{{ lookup('vars',  item) }}"
+      loop:
+        - nextcloud_admin_password
+        - nextcloud_pgsql_password
+        - nextcloud_redis_password
+

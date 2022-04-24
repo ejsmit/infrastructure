@@ -7,7 +7,7 @@
 if [ -d .git/ ]; then
 rm .git/hooks/pre-commit
 cat <<EOT >> .git/hooks/pre-commit
-if ( cat ansible/vars/vault-cloud.yml | grep -q "\$ANSIBLE_VAULT;" ); then
+if ( cat ansible/vars/vault.yml | grep -q "\$ANSIBLE_VAULT;" ); then
 echo "Vault Encrypted. Safe to commit."
 else
 echo "Vault not encrypted! Run 'make encrypt' and try again."

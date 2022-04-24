@@ -11,6 +11,7 @@
     - vars/telegram.vault.yml
     - vars/nextcloud-client.vault.yml
     - vars/ssh-certs.vault.yml
+    - vars/vault.yml
 
   handlers:
   - include: handlers/reboot.yml
@@ -22,16 +23,13 @@
     # - unattended-upgrades-raspbian
     # - gpg
     # - telegram
-    # - nextcloud-client-tools
+    # - file-tools
     # - postfix-relay
-    # - logwatch
-    - ssh-certs
+    - logwatch
+    # - ssh-certs
+    - pihole
 
 
-    # - dotfiles
-    # - motd
-
-    # - certbot-gandi-dns
 
   tasks:
 
