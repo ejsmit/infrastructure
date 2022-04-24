@@ -6,3 +6,6 @@ dns_domain: example.org
 # vault/nextcloud
 nextcloud_user: username
 nextcloud_password: password
+
+b2_account_id:  my_b2_id
+b2_account_id: my_b2_key

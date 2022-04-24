@@ -1,6 +1,6 @@
 
 ansible/roles.old
-ansible/collections
+ansible/collections/ansible_collections/ejsmit/containers/roles.old
 ansible/host_vars.old
 ansible/group_vars.old
 ansible/z_ansible.old

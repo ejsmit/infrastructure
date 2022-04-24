@@ -1,0 +1,13 @@
+
+- name: a playbook to install package updates on all servers
+  hosts: update
+  remote_user: deploy
+  become: true
+
+  vars_files:
+    - ~/.private/ansible/vars/me-myself-and-i.yml
+    
+  roles:
+    - geerlingguy.security
+    - packages
+

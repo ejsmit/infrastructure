@@ -22,9 +22,11 @@ arwen
 
 [home:children]
 raspbian
-kubuntu
+ubuntu
+; kubuntu
 
-[cloud:vars]
+
+[home:vars]
 host_domain=home
 ansible_host="{{inventory_hostname}}.{{host_domain}}"
 
@@ -35,9 +37,12 @@ ansible_host="{{inventory_hostname}}.{{host_domain}}"
 [raspbian]
 smaug
 
-[kubuntu]
-gandalf
-radagast
+[ubuntu]
+gollum
+
+; [kubuntu]
+; gandalf
+; radagast
 
 
 
@@ -52,6 +57,19 @@ smaug
 
 [dnsserver_local]
 smaug                   ansible_host="{{inventory_hostname}}.local"
+
+[fileserver]
+gollum
+
+
+
+; Special
+; =====
+
+[update:children]
+cloud
+home
+
 
 
 ; Local
@@ -69,26 +87,5 @@ localhost             ansible_connection=local
 [setup]
 smaug.local
 
-
-
-; [wsl]
-; sauron.local
-
-
-
-; [ubuntu_server]
-; gollum.home
-
-
-
-
-; [servers]
-; gollum.home
-; thorin.home
-
-
-; [desktops]
-; radagast.home
-; gandalf.home
 
 

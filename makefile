@@ -4,6 +4,7 @@ VAULTPASSWORD = ~/.private/ansible/vault_password.txt
 help:
 	@echo My Infrastructure Project
 
+
 # Terraform
 
 tfinit:
@@ -18,6 +19,7 @@ tfapply:
 tfdestroy:
 	cd terraform/cloud; terraform destroy
 
+
 # Ansible
 
 feedserver: private
@@ -28,6 +30,14 @@ dnsserver: private
 
 dnsserver_local: private
 	cd ansible; ansible-playbook dnsserver_local.yml
+
+fileserver: private
+	cd ansible; ansible-playbook fileserver.yml
+
+
+
+update: private
+	cd ansible; ansible-playbook update-servers.yml
 
 
 
