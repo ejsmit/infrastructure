@@ -1,0 +1,10 @@
+
+
+
+traefik_image: docker.io/library/traefik:v2.6
+
+dns_domain: example.org
+
+traefik_password: password
+
+gandi_api_token: token

@@ -1,0 +1,68 @@
+
+
+- name: "Validate variables"
+  include_tasks: validate.yml
+
+- name: ensure data directory exists
+  file:
+    path: "{{ nextcloud_pgsql_data_volume }}"
+    state: directory
+    mode: 0775
+    owner: root
+    group: root
+
+- name: ensure nextcloud directory exists
+  file:
+    path: "{{nextcloud_datadir}}"
+    state: directory
+    mode: 0775
+    owner: root
+    group: root
+
+- name: ensure nextcloud html directory exists
+  file:
+    path: "{{nextcloud_datadir}}/html"
+    state: directory
+    mode: 0775
+    owner: www-data
+    group: www-data
+
+- name: ensure nextcloud data directory exists
+  file:
+    path: "{{nextcloud_datadir}}/data"
+    state: directory
+    mode: 0775
+    owner: www-data
+    group: www-data
+
+- name: ensure nextcloud config directory exists
+  file:
+    path: "{{nextcloud_datadir}}/config"
+    state: directory
+    mode: 0775
+    owner: www-data
+    group: www-data
+
+
+- name: create nextcloud network
+  containers.podman.podman_network:
+    name: nextcloud-net
+
+- name: Copy traefik configuration file
+  template:
+    src: traefik-nextcloud.yml
+    dest: /srv/traefik/conf/traefik-nextcloud.yml
+
+
+
+- name: Call create container nextcloud-redis
+  include_tasks: redis.yml
+
+- name: Call create container nextcloud-pgsql
+  include_tasks: postgresql.yml
+
+- name: Call create container nextcloud
+  include_tasks: nextcloud.yml
+
+- name: Call nextcloud backups
+  include_tasks: backups.yml

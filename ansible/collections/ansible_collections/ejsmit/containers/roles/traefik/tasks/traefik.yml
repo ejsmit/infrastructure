@@ -1,0 +1,39 @@
+---
+
+- name: "Pull image {{ traefik_image }}"
+  containers.podman.podman_image:
+    name: "{{ traefik_image }}"
+
+- name: traefik reverse proxy container
+  containers.podman.podman_container:
+    name: "traefik"
+    image: "{{ traefik_image }}"
+    state: started
+    restart_policy: on-failure:10
+    network: external-net
+    volume:
+      - "/srv/traefik/traefik.toml:/traefik.toml"
+      - "/srv/traefik/conf:/configuration/"
+      - "/srv/traefik/acme.json:/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    env: 
+      GANDIV5_API_KEY: "{{gandi_api_token}}"
+    label:
+      io.containers.autoupdate: "image"
+
+- debug: msg="{{gandi_api_token}}"
+
+- name: generate systemd unit
+  command: "podman generate systemd --name --new --files  traefik"
+  args:
+    chdir: "/etc/systemd/system"
+
+- name: enable and start traefik systemd service
+  systemd:
+    name: container-traefik
+    daemon_reload:  yes
+    enabled: yes
+    scope: system
+    state: started

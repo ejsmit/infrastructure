@@ -1,0 +1,37 @@
+
+http:
+  routers:
+
+    nextcloudhttp_route:
+      entryPoints:
+      - "http"
+      middlewares:
+      - https_redirect
+      service: nextcloud_service
+      rule: "Host(`nextcloud.{{letsencrypt_domain}}`)"
+
+    nextcloud_route:
+      entryPoints:
+      - "https"
+      service: nextcloud_service
+      middlewares:
+        - nextcloud-caldav
+        - secheaders
+      rule: "Host(`nextcloud.{{letsencrypt_domain}}`)"
+      tls: {}
+
+  services:
+    nextcloud_service:
+      loadBalancer:
+        servers:
+        - url: "http://gollum.home:8081/"
+
+  middlewares:
+    nextcloud-caldav:
+      redirectRegex:
+        permanent: true
+        regex: "^https://(.*)/.well-known/(card|cal)dav"
+        replacement: "https://$1/remote.php/dav/"
+    secheaders:
+      headers:
+        stsSeconds: "315360000"

@@ -1,0 +1,37 @@
+
+
+- name: Call destroy container nextcloud-redis
+  vars:
+    containers_shared_name: "nextcloud-redis"
+    containers_shared_scope: "system"
+  include_tasks: ../../shared-tasks/destroy-container.yml
+
+- name: "Pull image  {{ nextcloud_redis_image }}"
+  containers.podman.podman_image:
+    name: "{{ nextcloud_redis_image }}"
+
+- name: Create podman container-nextcloud-redis
+  containers.podman.podman_container:
+    name: "nextcloud-redis"
+    image: "{{ nextcloud_redis_image }}"
+    state: started
+    restart_policy: on-failure:10
+    command: redis-server --requirepass {{nextcloud_redis_password}}
+    network: nextcloud-net
+    label:
+      io.containers.autoupdate: "image"
+
+- name: Call create systemd container-nextcloud-redis
+  vars:
+    containers_shared_name: "nextcloud-redis"
+    containers_shared_scope: "system"
+    containers_shared_path: "/etc/systemd/system"
+  include_tasks: ../../shared-tasks/create-systemd-container.yml
+
+- name: Start systemd container-nextcloud-redis
+  systemd:
+    name: container-nextcloud-redis
+    daemon_reload:  yes
+    enabled: yes
+    scope: system
+    state: started

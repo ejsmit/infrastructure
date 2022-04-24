@@ -1,0 +1,105 @@
+
+
+
+- name: Call destroy container-nextcloud
+  vars:
+    containers_shared_name: "nextcloud"
+    containers_shared_scope: "system"
+  include_tasks: ../../shared-tasks/destroy-container.yml
+
+- name: "Pull image {{ nextcloud_image }}"
+  containers.podman.podman_image:
+    name: "{{ nextcloud_image }}"
+
+
+- name:  Create podman container-nextcloud
+  containers.podman.podman_container:
+    name: nextcloud
+    image: "{{ nextcloud_image }}"
+    state: started
+    restart_policy: unless-stopped
+    network: nextcloud-net
+    publish:
+      - "8081:80"
+    volumes:
+      - "{{nextcloud_datadir}}/html:/var/www/html"
+      - "{{nextcloud_datadir}}/data:/var/www/html/data"
+      - "{{nextcloud_datadir}}/config:/var/www/html/config"
+    env:
+      PGSQL_HOST: nextcloud-pgsql.dns.podman
+      PGSQL_DB: "{{ nextcloud_pgsql_database }}"
+      PGSQL_USER: "{{ nextcloud_pgsql_user }}"
+      PGSQL_PASSWORD: "{{ nextcloud_pgsql_password }}"
+      NEXTCLOUD_ADMIN_USER: "{{nextcloud_admin_user}}"
+      NEXTCLOUD_ADMIN_PASSWORD: "{{nextcloud_admin_password}}"
+      NEXTCLOUD_TRUSTED_DOMAINS: "nextcloud.{{letsencrypt_domain}}"
+      NEXTCLOUD_DATA_DIR: "/var/www/html/data"
+      MAIL_FROM_ADDRESS: "nextcloud"
+      MAIL_DOMAIN: "{{mail_domain}}"
+      SMTP_HOST: "gollum.home"
+      SMTP_PORT: 1587
+      REDIS_HOST: nextcloud-redis.dns.podman
+      OVERWRITEPROTOCOL: "https"
+      TRUSTED_PROXIES: "traefik"
+      REDIS_HOST_PASSWORD: "{{nextcloud_redis_password}}"
+    label:
+      io.containers.autoupdate: "image"
+
+- name: Call create systemd container-nextcloud
+  vars:
+    containers_shared_name: "nextcloud"
+    containers_shared_scope: "system"
+    containers_shared_path: "/etc/systemd/system"
+  include_tasks: ../../shared-tasks/create-systemd-container.yml
+
+
+- name: update nextcloud systemd service to add dependency to traefik & redis
+  community.general.ini_file:
+    path: /etc/systemd/system/container-nextcloud.service
+    section: Unit
+    option: Wants
+    value: "container-traefik.service  container-nextcloud-redis.service"
+    no_extra_spaces: yes
+
+- name: update nextcloud systemd service to add dependency to database
+  community.general.ini_file:
+    path: /etc/systemd/system/container-nextcloud.service
+    section: Unit
+    option: BindsTo
+    value: container-nextcloud-pgsql.service
+    no_extra_spaces: yes
+
+- name: update nextcloud systemd service to ensure correct loading order
+  community.general.ini_file:
+    path: /etc/systemd/system/container-nextcloud.service
+    section: Unit
+    option: After
+    value: container-nextcloud-pgsql.service
+    no_extra_spaces: yes
+
+- name: Start systemd container-nextcloud
+  systemd:
+    name: container-nextcloud
+    daemon_reload:  yes
+    enabled: yes
+    scope: system
+    state: started
+
+
+
+- name: Systemd Timer file to run nextcloud cron job
+  template:
+    src: nextcloud_cron.timer
+    dest: /etc/systemd/system/nextcloud_cron.timer
+
+- name: Systemd Service file to run nextcloud cron job
+  template:
+    src: nextcloud_cron.service
+    dest: /etc/systemd/system/nextcloud_cron.service
+
+- name: Systemd - enable nextcloud timer
+  systemd:
+    name: nextcloud_cron.timer
+    daemon_reload: yes
+    enabled: yes
+    state: started

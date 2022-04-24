@@ -1,0 +1,13 @@
+
+
+[Unit]
+Description=Run Nextcloud cron job every 5 mins
+Requires=container-nextcloud.service
+After=container-nextcloud.service
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,7 @@
+
+
+[Unit]
+Description=Run Nextcloud cron job every 5 mins
+
+[Service]
+ExecStart=podman exec --user www-data nextcloud php -f /var/www/html/cron.php

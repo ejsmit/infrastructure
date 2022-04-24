@@ -1,0 +1,17 @@
+
+http:
+  routers:
+
+    whoamihttps_route:
+      entryPoints:
+      - "websecure"
+      service: whoami_service
+      rule: "Host(`arwen-whoami.{{letsencrypt_domain}}`)"
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    whoami_service:
+      loadBalancer:
+        servers:
+        - url: "http://arwen-whoami.smit.org.uk:8080/"

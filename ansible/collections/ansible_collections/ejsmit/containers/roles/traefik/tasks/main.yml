@@ -1,0 +1,36 @@
+
+- name: ensure traefik conf directory exists
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0775'
+    owner: root
+    group: root
+  loop:
+    - /srv/traefik
+    - /srv/traefik/conf
+
+- name: copy traefik config
+  template:
+    src: traefik.toml
+    dest: /srv/traefik/traefik.toml
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Copy traefik-web configuration file
+  template:
+    src: traefik_web.toml
+    dest: /srv/traefik/conf/traefik_web.yml
+
+- name: ensure traefik certificates storage exists
+  file:
+    path: "/srv/traefik/acme.json"
+    state: touch
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: Call create container traefik
+  include_tasks: traefik.yml
+

@@ -1,0 +1,14 @@
+# htpasswd -nb admin secure_password
+[http.middlewares.simpleAuth.basicAuth]
+  users = [
+    "{{traefik_password}}"
+  ]
+
+[http.routers]
+  [http.routers.api]
+    rule = "Host(`{{hostname}}-traefik.{{dns_domain}}`)"
+    entrypoints = ["websecure"]
+    middlewares = ["simpleAuth"]
+    service = "api@internal"
+    [http.routers.api.tls]
+      certResolver = "letsencrypt"

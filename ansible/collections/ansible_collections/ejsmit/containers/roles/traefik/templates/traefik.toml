@@ -1,0 +1,44 @@
+
+[log]
+  level = "DEBUG"
+
+[accessLog]
+
+[api]
+  insecure = false
+  debug = true
+  dashboard = true
+
+[providers]
+  [providers.file]
+    watch = true
+    directory = "/configuration/"
+
+
+[entryPoints]
+  [entryPoints.web]
+  address = ":80"
+    [entryPoints.web.http.redirections.entryPoint]
+      to = "websecure"
+      scheme = "https"
+
+  [entryPoints.websecure]
+  address = ":443"
+
+
+
+[certificatesResolvers.letsencrypt.acme]
+  email = "rassie@smit.org.uk"
+  storage = "acme.json"
+  caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  [certificatesResolvers.letsencrypt.acme.dnsChallenge]
+    provider = "gandiv5"
+
+
+# [certificatesResolvers.letsencrypt.acme.tlsChallenge]
+
+#[[tls.certificates]]
+#  certFile = "/etc/letsencrypt/live/smit.org.uk/fullchain.pem"
+#  keyFile = "/etc/letsencrypt/live/smit.org.uk/privkey.pem"
+
+
