@@ -1,0 +1,17 @@
+
+- name: Create pihole backup script
+  template:
+    src: pihole_backup.sh
+    dest: /usr/local/bin/pihole_backup.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- cron:
+    name: "PiHole Backup"
+    minute: "0"
+    hour: "5"
+    job: "/usr/local/bin/pihole_backup.sh"
+    cron_file: pihole_backup
+    user: root
+

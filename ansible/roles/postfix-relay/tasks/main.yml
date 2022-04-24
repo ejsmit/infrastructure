@@ -33,12 +33,25 @@
     dest: /etc/aliases
     owner: root
     group: root
-    mode: '0755'
+    mode: '0644'
   register: aliases_changed
 
 - name: Update aliases
   command: newaliases
   when: aliases_changed.changed
+
+- name: Create mail generic substtitute file
+  template:
+    src: generic
+    dest: /etc/postfix/generic
+    owner: root
+    group: root
+    mode: '0644'
+  register: passwords_changed
+
+- name: Generate generic substitute db
+  command: postmap /etc/postfix/generic
+  when: passwords_changed.changed
 
 - name: Update Postfix configuration
   lineinfile:
@@ -75,6 +88,8 @@
       value: "yes"
     - name: smtp_tls_security_level
       value: encrypt
+    - name: smtp_generic_maps
+      value: "hash:/etc/postfix/generic"
   notify: restart postfix
 
 - name: Ensure postfix is started and enabled at boot.

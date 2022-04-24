@@ -27,6 +27,7 @@
       - python3-requests
       - python3-uritemplate
       - python3-jwcrypto
+      - python3-jwt
 
 - name: install github3.py using pip
   pip:

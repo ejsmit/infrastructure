@@ -1,2 +1,3 @@
-postmaster:    root
-root:          {{email_address}}
+mailer-daemon:  postmaster
+postmaster:     root
+root:           {{email_address}}
