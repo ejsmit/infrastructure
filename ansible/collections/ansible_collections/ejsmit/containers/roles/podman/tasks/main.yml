@@ -1,0 +1,74 @@
+---
+
+- name: Install podman
+  apt:
+    name:
+      - podman
+      - buildah
+      - skopeo
+      - dnsmasq
+      - golang-github-containernetworking-plugin-dnsname
+
+# finally fixed in ubuntu 22.04
+# - name: fix dnsname location 
+#   ansible.builtin.file:
+#     src: /usr/lib/dnsname
+#     path: /usr/lib/cni/dnsname
+#     state: link
+
+- name: Create external-net network
+  containers.podman.podman_network:
+    name: external-net
+    internal: false
+
+- name: Check if {{default_user}} lingers
+  stat: path=/var/lib/systemd/linger/{{default_user}}
+  register: linger
+
+- name: Enable linger for {{default_user}}
+  command: loginctl enable-linger {{default_user}}
+  when: not linger.stat.exists
+
+- name: enable builtin root auto update timer.
+  systemd:
+    name: podman-auto-update.timer
+    enabled: yes
+    state: started
+
+- name: install systemd user auto update systemd timer
+  ansible.builtin.file:
+    src: /usr/lib/systemd/system/{{item}}
+    dest: /etc/systemd/user/{{item}}
+    state: link
+  loop:
+    - podman-auto-update.service
+    - podman-auto-update.timer
+
+- block:
+  - name: enable builtin rootless auto update timer.
+    systemd:
+      name: podman-auto-update.timer
+      enabled: yes
+      state: started
+      scope: user
+  become_user: "{{default_user}}"
+
+- name: Clean up root podman once per week.
+  cron:
+    name: "podman root cleanup"
+    minute: "0"
+    hour: "2"
+    weekday: "4"
+    job: "/usr/bin/podman system prune --volumes --force > /dev/null 2>&1"
+    cron_file: podman-prune
+    user: root
+
+- name: Clean up rootless podman once per week.
+  cron:
+    name: "podman rootless cleanup"
+    minute: "0"
+    hour: "2"
+    weekday: "3"
+    job: "/usr/bin/podman system prune --volumes --force > /dev/null 2>&1"
+    cron_file: podman-prune-rootless
+    user: "{{default_user}}"
