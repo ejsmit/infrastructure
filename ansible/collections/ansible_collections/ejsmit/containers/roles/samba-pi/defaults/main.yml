@@ -1,0 +1,11 @@
+---
+
+
+samba_image: "docker.io/dperson/samba:latest"
+samba_data: /mnt/disk2/shares
+samba_ports:
+  - "445:445"
+samba_volumes:
+  - "{{samba_data}}:/shares"
+samba_users: -u "example;password"
+samba_shares: -s "temp;/shares/tmp"

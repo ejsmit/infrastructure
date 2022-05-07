@@ -1,0 +1,45 @@
+---
+
+- name: ensure share mount directory exists
+  file:
+    path: "{{ samba_data }}"
+    state: directory
+    mode: 0775
+    owner: root
+    group: root
+
+
+- name: ensure samba shares directories exist
+  file:
+    path: "{{ samba_data }}/{{item}}"
+    state: directory
+    mode: 775
+    owner: root
+    group: root
+    # recurse: yes
+  with_items: "{{ samba_shares_list }}"
+
+- name: Start samba file sharing
+  containers.podman.podman_container:
+    name: samba-pi
+    image: "{{samba_image}}"
+    state: started
+    restart_policy: on-failure:10
+    volumes: "{{samba_volumes}}"
+    publish: "{{samba_ports}}"
+    command: "-p -r {{samba_users}} {{samba_shares}}"
+    label:
+      io.containers.autoupdate: "image"
+
+- name: generate systemd unit
+  command: "podman generate systemd --name --new --files  samba-pi"
+  args:
+    chdir: "/etc/systemd/system"
+
+- name: enable and start samba-pi systemd service
+  systemd:
+    name: container-samba-pi
+    daemon_reload:  yes
+    enabled: yes
+    scope: system
+    state: started
