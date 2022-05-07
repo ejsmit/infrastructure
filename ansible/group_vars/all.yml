@@ -19,7 +19,7 @@ all_packages:
   - software-properties-common
 
 
-
+# Email and DNS
 dns_domain: "{{private_my_dns_domain}}"
 email_domain: "{{private_my_email_domain}}"
 
@@ -30,22 +30,30 @@ isp_email_password: "{{private_my_email_password}}"
 isp_email_server: mail.gandi.net
 
 
+# SSH Certificates
+ssh_allowed_principals:
+  - user-rsmit
+  - user-pi
+
+
+# Backups
+b2_account_id:  "{{private_b2_account_id}}"
+b2_account_key: "{{private_b2_account_key}}"
+
+
+
+
 # # role: dotfiles
 # dotfiles_project: ejsmit/dotfiles
 # fresh_install_url: https://raw.githubusercontent.com/ejsmit/fresh/master/install.sh
 
-# ssh_allowed_principals:
-#   - user-rsmit
-#   - user-pi
+
 
 # # role: certbot-gandi-dns
-# gandi_api_token: "{{private_gandi_api_token}}"
+gandi_api_token: "{{private_gandi_api_token}}"
 # certbot_admin_email: "{{private_certbot_admin_email}}"
 # certbot_domains: "{{private_certbot_domains}}"
 
-# # traefik
-# letsencrypt_domain: "{{ private_my_dns_domain }}"
 
 
-# docker_version_armv7: "*"
 

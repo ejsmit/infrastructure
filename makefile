@@ -49,8 +49,11 @@ bootstrap-raspbian: private
 	cd ansible; ansible raspberrypi.local -m ping -u pi
 	cd ansible; ansible-playbook bootstrap-raspbian.yml
 
-
-
+# usage: HOSTNAME=newname make bootstrap-ubuntu-pi
+bootstrap-ubuntu-pi: private
+	ssh-copy-id -i ~/.ssh/id_ed25519.pub ubuntu@ubuntu.home
+	cd ansible; ansible ubuntu.home -m ping -u ubuntu
+	cd ansible; ansible-playbook bootstrap-ubuntu-pi.yml
 
 
 

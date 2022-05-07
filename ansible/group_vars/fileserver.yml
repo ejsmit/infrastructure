@@ -1,0 +1,14 @@
+---
+
+
+# samba config
+samba_shares_list:
+  - music
+  - videos
+samba_data: /media/{{external_disk}}/samba
+
+# all shares subdirectories of /shares
+samba_music: "-s music;/shares/music;no;yes;no;nas_media,nas_admin;;nas_admin;"
+samba_videos: "-s videos;/shares/videos;no;yes;no;nas_media,nas_admin;;nas_admin"
+samba_shares: "{{samba_music}} {{samba_videos}}"
+samba_users: "-u nas_media;nas_media_password -u nas_admin;nas_admin_password"

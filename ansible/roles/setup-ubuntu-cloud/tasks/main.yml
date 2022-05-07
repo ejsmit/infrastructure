@@ -34,24 +34,30 @@
     state: link
   when: resolv_conf.stat.islnk is defined and resolv_conf.stat.lnk_target == '../run/systemd/resolve/stub-resolv.conf'
 
-- name: get ubuntu user groups
-  shell: id -Gn ubuntu
-  register: ubuntu_groups
-
-# skip first group, which is primary.
 - include_role:
     name: create-user
   vars:
     name: "{{default_user}}"
     password_hash: "{{default_user_password_hash}}"
     default_key: "{{deploy_default_key}}"
-    user_groups: "{{ubuntu_groups.stdout.split(' ')[1:] | join(',') }}"
 
 - name: change ubuntu user password
   user:
     name: ubuntu
     password: "!"
     shell: '/usr/bin/false'
+
+- name: create default group
+  group:
+    name: "{{default_user}}"
+
+- name: create default user
+  user:
+    name: "{{default_user}}"
+    group: "{{default_user}}"
+    groups: adm,dialout,sudo,cdrom,floppy,audio,dip,video,plugdev,netdev,lxd
+    password: "{{ default_user_password_hash }}"
+    shell: '/bin/bash'
 
 - name: get current timezone
   command: cat /etc/timezone

@@ -1,8 +1,8 @@
 ---
 
 - name: a playbook to bootstrap a generic host with a deploy user
-  hosts: 'raspberrypi.local'
-  remote_user: pi
+  hosts: 'ubuntu.home'
+  remote_user: ubuntu
   become: true
 
   vars_files:

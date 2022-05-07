@@ -2,19 +2,22 @@
 
 ---
 - name: dump vars
-  hosts: dnsserver
+  hosts: fileserver
   remote_user: deploy
   become: true
-  gather_facts: false
+  gather_facts: true
 
-  vars_files:
-    - vars/container-nextcloud.vault.yml
 
   tasks:
-    - name: print variables
-      debug: msg="{{ lookup('vars',  item) }}"
-      loop:
-        - nextcloud_admin_password
-        - nextcloud_pgsql_password
-        - nextcloud_redis_password
+    # - name: print variables
+    #   debug: msg="{{ lookup('vars',  item) }}"
+    #   loop:
+    #     - vaultwarden_admin_token
 
+
+    - name: get ubuntu user groups
+      shell: id -Gn ubuntu | tr ' ' ','
+      register: ubuntu_groups
+
+    - debug: msg="{{ubuntu_groups.stdout.split(' ')[1:] }}"
+    # - debug: msg="{{ubuntu_groups.stdout | map("split", " ") }}"

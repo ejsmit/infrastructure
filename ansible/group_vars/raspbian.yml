@@ -6,3 +6,5 @@
 default_user: pi
 
 
+# bootstrap security
+security_autoupdate_enabled: false

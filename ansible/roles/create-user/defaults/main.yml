@@ -3,6 +3,6 @@ password_hash: "change this to a real hash"
 default_key: "/.ssh/id_ed25519.pub"
 name: "deploy"
 password_sudo: yes
-
+user_groups: ''
 
 

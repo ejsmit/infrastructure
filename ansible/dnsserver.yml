@@ -9,7 +9,6 @@
     - ~/.private/ansible/vars/gpg-privkey.vault.yml
     - vars/gpg-pubkey.vault.yml
     - vars/telegram.vault.yml
-    - vars/nextcloud-client.vault.yml
     - vars/ssh-certs.vault.yml
     - vars/vault.yml
 

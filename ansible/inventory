@@ -78,6 +78,7 @@ home
 ; bootstrap playbook should rename host to something more unique.
 [bootstrap]
 raspberrypi.local
+ubuntu.home
 
 [local]
 localhost             ansible_connection=local

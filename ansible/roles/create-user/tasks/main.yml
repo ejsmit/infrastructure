@@ -11,8 +11,19 @@
     name: "{{name}}"
     shell: /bin/bash
     group: "{{name}}"
+    groups: "{{user_groups}}"
     state: present
     password: "{{password_hash}}"
+  when: user_groups != ''
+
+- name: Add default user
+  user:
+    name: "{{name}}"
+    shell: /bin/bash
+    group: "{{name}}"
+    state: present
+    password: "{{password_hash}}"
+  when: user_groups == ''
 
 - name: Ensure sudoers.d is enabled
   lineinfile:

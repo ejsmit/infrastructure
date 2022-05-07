@@ -14,15 +14,8 @@
       vars:
         name: deploy
         password_hash: "{{deploy_password_hash}}"
-        default_key: "/.ssh/id_ed25519.pub"
+        default_key: "{{deploy_default_key}}"
         password_sudo: no
-
-    - include_role:
-        name: create-user
-      vars:
-        name: {{default_user}}
-        password_hash: "{{deploy_password_hash}}"
-        default_key: "/.ssh/id_ed25519.pub"
 
     - set_fact:
         new_hostname: {{ lookup('env', 'HOSTNAME') }}

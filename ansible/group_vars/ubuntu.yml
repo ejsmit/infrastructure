@@ -5,3 +5,7 @@
 # default user
 default_user: rsmit
 
+# bootstrap security
+security_autoupdate_enabled: true
+security_autoupdate_reboot: true
+security_autoupdate_mail_to: "root"

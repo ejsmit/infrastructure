@@ -10,7 +10,6 @@
     - ~/.private/ansible/vars/gpg-privkey.vault.yml
     - vars/gpg-pubkey.vault.yml
     - vars/telegram.vault.yml
-    - vars/nextcloud-client.vault.yml
     - vars/ssh-certs.vault.yml
     - vars/vault.yml
     # - vars/samba.vault.yml
@@ -27,30 +26,27 @@
     # - setup-ubuntu-pi
     # - geerlingguy.security
     # - packages
-    # - unattended-upgrades-raspbian
     # - gpg
     # - telegram
     # - file-tools
     # - postfix-relay
     # - logwatch
     # - ssh-certs
+    # now run: sudo zpool import -f bigdata
+    - podman
+    - samba-pi
+
+
 
 
     # - dotfiles
     # - motd
-    # - nextcloud-client-tools
-    # - install_certs
-    # - ssh-certs
-    # - podman
-    - traefik
-    # - smtp-relay
-    # - samba-pi
+
+    # - traefik
     # - syncthing
     # - nextcloud
-    # - wallabag
     # - vaultwarden
     # - minio
-    # - ttrss
 
 
 
