@@ -47,11 +47,11 @@
     owner: root
     group: root
     mode: '0644'
-  register: passwords_changed
+  register: generic_changed
 
 - name: Generate generic substitute db
   command: postmap /etc/postfix/generic
-  when: passwords_changed.changed
+  when: generic_changed.changed
 
 - name: Update Postfix configuration
   lineinfile:

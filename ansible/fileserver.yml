@@ -33,19 +33,19 @@
     # - logwatch
     # - ssh-certs
     # now run: sudo zpool import -f bigdata
-    - podman
-    - samba-pi
-
-
-
+    # - podman
+    # - samba-pi
+    # - traefik
+    # - nextcloud
+    - vaultwarden
 
     # - dotfiles
     # - motd
 
-    # - traefik
+
     # - syncthing
-    # - nextcloud
-    # - vaultwarden
+
+
     # - minio
 
 

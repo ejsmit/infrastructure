@@ -41,9 +41,6 @@ syncthing_folders:
   - "/media/{{external_disk}}/samba/music:/var/syncthing/music"
 
 
-# nextcloud
-nextcloud_datadir: /media/{{external_disk}}/nextcloud
-nextcloud_pgsql_data_volume: /media/{{external_disk}}/nextcloud-pgsql
 
 
 

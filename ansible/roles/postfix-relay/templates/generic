@@ -1,4 +1,4 @@
 # Run postmap /etc/postfix/generic
 
-@smaug.home smaug@smit.org.uk
+@{{hostname_fqdn}} {{hostname}}@{{mail_domain}}
 
