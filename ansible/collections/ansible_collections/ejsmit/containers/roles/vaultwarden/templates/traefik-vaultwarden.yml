@@ -1,0 +1,24 @@
+
+http:
+  routers:
+
+    # vaultwardenhttp_route:
+    #   entryPoints:
+    #   - "http"
+    #   middlewares:
+    #   - https_redirect
+    #   service: vaultwarden_service
+    #   rule: "Host(`vaultwarden.{{dns_domain}}`)"
+
+    vaultwarden_route:
+      entryPoints:
+      - "https"
+      service: vaultwarden_service
+      rule: "Host(`vaultwarden.{{dns_domain}}`)"
+      tls: {}
+
+  services:
+    vaultwarden_service:
+      loadBalancer:
+        servers:
+        - url: "http://{{hostname}}.{{dns_domain}}:8082/"

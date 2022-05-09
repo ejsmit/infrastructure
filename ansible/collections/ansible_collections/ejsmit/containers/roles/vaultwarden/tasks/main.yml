@@ -1,0 +1,22 @@
+---
+
+- name: Copy vaultwarden traefik configuration file
+  template:
+    src: traefik-vaultwarden.yml
+    dest: /srv/traefik/conf/traefik-vaultwarden.yml
+
+
+- block:
+
+    - name: ensure systemd user config directory exists
+      file:
+        path: "$HOME/.config/systemd/user"
+        state: directory
+
+    - name: Install vaultwarden container
+      include_tasks: vaultwarden.yml
+
+    # - name: Configure backups
+    #   include_tasks: backups.yml
+
+  become_user: "{{default_user}}"

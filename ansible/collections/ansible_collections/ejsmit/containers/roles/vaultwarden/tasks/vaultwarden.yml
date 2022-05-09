@@ -1,0 +1,44 @@
+---
+
+- name: "Pull image {{ vaultwarden_image }}"
+  containers.podman.podman_image:
+    name: "{{ vaultwarden_image }}"
+
+- name: Start vaultwarden password store
+  containers.podman.podman_container:
+    name: vaultwarden
+    image: "{{vaultwarden_image}}"
+    state: started
+    volumes: "{{vaultwarden_volume}}:/data/:Z"
+    publish: "8082:8080"
+    env:
+      ROCKET_PORT: "8080"
+      ADMIN_TOKEN: "{{vaultwarden_admin_token}}"
+      ROCKET_WORKERS: 4
+      SHOW_PASSWORD_HINT: true
+      SMTP_HOST: "gollum.home"
+      SMTP_PORT: 587
+      SMTP_SSL: false
+      SMTP_FROM: "vaultwarden@{{email_domain}}"
+      SIGNUPS_ALLOWED: false
+      INVITATIONS_ALLOWED: false
+      DOMAIN_URL: "https://vaultwarden.{{dns_domain}}"
+      #SMTP_DEBUG: true
+    label:
+      io.containers.autoupdate: "image"
+
+
+
+- name: generate systemd unit
+  command: "podman generate systemd --name --new --files  vaultwarden"
+  args:
+    chdir: "$HOME/.config/systemd/user"
+
+- name: enable and start vaultwarden systemd service
+  systemd:
+    name: container-vaultwarden
+    daemon_reload:  yes
+    enabled: yes
+    scope: user
+    state: started
+

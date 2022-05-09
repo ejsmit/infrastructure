@@ -1,0 +1,8 @@
+---
+
+
+vaultwarden_image: "docker.io/vaultwarden/server:latest"
+vaultwarden_volume: /mnt/disk2/data
+
+vaultwarden_admin_token: "admin_token_goes_here"
+

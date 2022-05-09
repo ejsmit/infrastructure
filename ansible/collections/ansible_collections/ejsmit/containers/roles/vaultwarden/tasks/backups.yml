@@ -1,0 +1,16 @@
+
+- name: Copy vaultwarden backup script
+  template:
+    src: vaultwarden_backup.sh
+    dest: /usr/local/bin/vaultwarden_backup.sh
+    mode: "0755"
+
+
+- name: schedule vaultwarden backup
+  cron:
+    name: "vaultwarden backup"
+    minute: "0"
+    hour: "1"
+    job: "/usr/local/bin/vaultwarden_backup.sh"
+    cron_file: vaultwarden_backup
+    user: root
