@@ -12,17 +12,6 @@
   with_items:
     - whoami.yml
 
-- name: Create a A record to point to new cloud server
-  community.general.gandi_livedns:
-    domain: '{{letsencrypt_domain}}'
-    record: '{{hostname}}-whoami'
-    type: CNAME
-    values:
-    - 'arwen'
-    ttl: 10800
-    api_key: '{{gandi_api_token}}'
-
-
 - name: whoami container
   containers.podman.podman_container:
     name: whoami

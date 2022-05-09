@@ -23,8 +23,6 @@
     label:
       io.containers.autoupdate: "image"
 
-- debug: msg="{{gandi_api_token}}"
-
 - name: generate systemd unit
   command: "podman generate systemd --name --new --files  traefik"
   args:

@@ -18,10 +18,10 @@
     owner: root
     group: root
 
-- name: Copy traefik-web configuration file
-  template:
-    src: traefik_web.toml
-    dest: /srv/traefik/conf/traefik_web.yml
+# - name: Copy traefik-web configuration file
+#   template:
+#     src: traefik_web.toml
+#     dest: /srv/traefik/conf/traefik_web.yml
 
 - name: ensure traefik certificates storage exists
   file:
@@ -34,3 +34,5 @@
 - name: Call create container traefik
   include_tasks: traefik.yml
 
+# - name: Call create container whoami
+#   include_tasks: whoami.yml

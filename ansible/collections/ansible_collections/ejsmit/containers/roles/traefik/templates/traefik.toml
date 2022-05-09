@@ -35,10 +35,3 @@
     provider = "gandiv5"
 
 
-# [certificatesResolvers.letsencrypt.acme.tlsChallenge]
-
-#[[tls.certificates]]
-#  certFile = "/etc/letsencrypt/live/smit.org.uk/fullchain.pem"
-#  keyFile = "/etc/letsencrypt/live/smit.org.uk/privkey.pem"
-
-
