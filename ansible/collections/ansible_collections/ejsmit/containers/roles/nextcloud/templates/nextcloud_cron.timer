@@ -2,8 +2,8 @@
 
 [Unit]
 Description=Run Nextcloud cron job every 5 mins
-Requires=container-nextcloud.service
-After=container-nextcloud.service
+Requires=pod-nextcloud-pod.service
+After=pod-nextcloud-pod.service
 
 [Timer]
 OnBootSec=10min

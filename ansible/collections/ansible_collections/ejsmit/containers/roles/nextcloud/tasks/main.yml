@@ -1,52 +1,45 @@
 
 
-- name: "Validate variables"
-  include_tasks: validate.yml
 
 - name: ensure data directory exists
   file:
     path: "{{ nextcloud_pgsql_data_volume }}"
     state: directory
     mode: 0775
-    owner: root
-    group: root
+    owner: rsmit
+    group: rsmit
 
 - name: ensure nextcloud directory exists
   file:
     path: "{{nextcloud_datadir}}"
     state: directory
     mode: 0775
-    owner: root
-    group: root
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
 
 - name: ensure nextcloud html directory exists
   file:
     path: "{{nextcloud_datadir}}/html"
     state: directory
     mode: 0775
-    owner: www-data
-    group: www-data
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
 
 - name: ensure nextcloud data directory exists
   file:
     path: "{{nextcloud_datadir}}/data"
     state: directory
     mode: 0775
-    owner: www-data
-    group: www-data
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
 
 - name: ensure nextcloud config directory exists
   file:
     path: "{{nextcloud_datadir}}/config"
     state: directory
     mode: 0775
-    owner: www-data
-    group: www-data
-
-
-- name: create nextcloud network
-  containers.podman.podman_network:
-    name: nextcloud-net
+    owner: "{{default_user}}"
+    group: "{{default_user}}"
 
 - name: Copy traefik configuration file
   template:
@@ -55,14 +48,53 @@
 
 
 
-- name: Call create container nextcloud-redis
-  include_tasks: redis.yml
+- block:
 
-- name: Call create container nextcloud-pgsql
-  include_tasks: postgresql.yml
+    - name: ensure systemd user services directory exists
+      file:
+        path: "$HOME/.config/systemd/user"
+        state: directory
+        mode: 0775
+        owner: "{{default_user}}"
+        group: "{{default_user}}"
 
-- name: Call create container nextcloud
-  include_tasks: nextcloud.yml
+    - name: Create Nextcloud pod
+      containers.podman.podman_pod:
+        name: nextcloud-pod
+        state: started
+        ports:
+          - "8081:80"
 
-- name: Call nextcloud backups
-  include_tasks: backups.yml
+    - name: Call create container nextcloud-redis
+      include_tasks: redis.yml
+
+    - name: Call create container nextcloud-pgsql
+      include_tasks: postgresql.yml
+
+    - name: Call create container nextcloud
+      include_tasks: nextcloud.yml
+
+    - name: "create systemd service for nextcloud-pod"
+      command: "podman generate systemd --name --new --files nextcloud-pod"
+      args:
+        chdir: "$HOME/.config/systemd/user"
+
+    - name: Start systemd container-nextcloud
+      systemd:
+        name: pod-nextcloud-pod
+        daemon_reload:  yes
+        enabled: yes
+        scope: user
+        state: started
+
+  become_user: "{{default_user}}"
+
+
+
+
+
+
+
+
+
+

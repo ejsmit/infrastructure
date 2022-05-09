@@ -2,29 +2,30 @@
 http:
   routers:
 
-    nextcloudhttp_route:
-      entryPoints:
-      - "http"
-      middlewares:
-      - https_redirect
-      service: nextcloud_service
-      rule: "Host(`nextcloud.{{letsencrypt_domain}}`)"
+    # nextcloudhttp_route:
+    #   entryPoints:
+    #   - "http"
+    #   middlewares:
+    #   - https_redirect
+    #   service: nextcloud_service
+    #   rule: "Host(`nextcloud.{{dns_domain}}`)"
 
     nextcloud_route:
       entryPoints:
-      - "https"
+      - "websecure"
       service: nextcloud_service
       middlewares:
         - nextcloud-caldav
         - secheaders
-      rule: "Host(`nextcloud.{{letsencrypt_domain}}`)"
-      tls: {}
+      rule: "Host(`nextcloud.{{dns_domain}}`)"
+      tls: 
+        certResolver: letsencrypt
 
   services:
     nextcloud_service:
       loadBalancer:
         servers:
-        - url: "http://gollum.home:8081/"
+        - url: "http://{{hostname}}.{{dns_domain}}:8081/"
 
   middlewares:
     nextcloud-caldav:

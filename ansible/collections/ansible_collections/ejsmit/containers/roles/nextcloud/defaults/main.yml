@@ -13,7 +13,6 @@ nextcloud_admin_user: admin
 hostname: your_real_hostname_no_domain
 nextcloud_datadir: /media/disk1/nextcloud
 nextcloud_pgsql_data_volume: /media/disk3/nextcloud-db
-daily_backup_dir: /backups/path
 
 # container-nextcloud vault vars
 nextcloud_admin_password: change_password
@@ -22,4 +21,4 @@ nextcloud_redis_password: change_password
 
 # all groups vars, imported
 mail_domain: example.org
-letsencrypt_domain: example.org
+dns_domain: example.org

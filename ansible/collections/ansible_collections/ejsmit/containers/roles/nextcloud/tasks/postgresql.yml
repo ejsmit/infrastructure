@@ -2,11 +2,6 @@
 
 
 
-- name: Call destroy container nextcloud-pgsql
-  vars:
-    containers_shared_name: "nextcloud-pgsql"
-    containers_shared_scope: "system"
-  include_tasks: ../../shared-tasks/destroy-container.yml
 
 - name: "Pull image {{ nextcloud_pgsql_image }}"
   containers.podman.podman_image:
@@ -14,11 +9,10 @@
 
 - name: Create podman container-nextcloud-pgsql
   containers.podman.podman_container:
-    name: "nextcloud-pgsql"
+    name: "nextcloud-db"
     image: "{{ nextcloud_pgsql_image }}"
+    pod: nextcloud-pod
     state: started
-    restart_policy: unless-stopped
-    network: nextcloud-net
     volumes:
       - "{{ nextcloud_pgsql_data_volume }}:/var/lib/postgresql/data"
     env:
@@ -31,24 +25,10 @@
   register: nextcloud_db_status
 
 - name: wait for postgres to become ready
-  shell: "podman logs --since=2m nextcloud-pgsql  2>&1 | grep 'port 5432'"
+  shell: "podman logs --since=2m nextcloud-db  2>&1 | grep 'port 5432'"
   register: result
   until: result.rc == 0
   when: nextcloud_db_status.changed
   retries: 45
   delay: 20
 
-- name: Call create systemd container-nextcloud-pgsql
-  vars:
-    containers_shared_name: "nextcloud-pgsql"
-    containers_shared_scope: "system"
-    containers_shared_path: "/etc/systemd/system"
-  include_tasks: ../../shared-tasks/create-systemd-container.yml
-
-- name: Start systemd container-nextcloud-pgsql
-  systemd:
-    name: container-nextcloud-pgsql
-    daemon_reload:  yes
-    enabled: yes
-    scope: system
-    state: started
