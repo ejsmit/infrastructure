@@ -10,7 +10,6 @@
 #     sshkeys     = [ data.linode_sshkey.rsmit.ssh_key ]
 #     root_pass   = yamldecode(file("~/.private/ansible/vars/me-myself-and-i.yml"))["private_default_linode_root_password"]
 
-#     imported_config    = var.arwen_imported_config
 # }
 
 # module "arwen_dns" {

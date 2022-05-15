@@ -27,10 +27,10 @@ resource "linode_instance" "instance" {
 
 }
 
-resource "linode_firewall_device" "my_device" {
-  firewall_id = linode_firewall.default_web.id
-  entity_id = linode_instance.instance.id
-}
+# resource "linode_firewall_device" "my_device" {
+#   firewall_id = linode_firewall.default_web.id
+#   entity_id = linode_instance.instance.id
+# }
 
 
 

@@ -2,18 +2,26 @@
 # Global variables
 
 
-
-
 # Variables per managed host
 
 variable "arwen_linode_instance" {
     type = string
 }
-
 variable "arwen_name" {
     type = string
 }
 variable "arwen_additional_names" {
+  type = set(string)
+}
+
+
+variable "galadriel_linode_instance" {
+    type = string
+}
+variable "galadriel_name" {
+    type = string
+}
+variable "galadriel_additional_names" {
   type = set(string)
 }
 
@@ -51,6 +59,7 @@ locals {
   # Linode Images
   linode_image_ubuntu2004 = "linode/ubuntu20.04"
   linode_image_ubuntu2110 = "linode/ubuntu21.10"
+  linode_image_ubuntu2204 = "linode/ubuntu22.04"
 }
 
 
